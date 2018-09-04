@@ -24,7 +24,9 @@ function getMIDIMessage(midiMessage) {
 
 
 function onMidiSuccess(success) {
-    for (var input of success.inputs.values()) {
+    let inputs = success.inputs.values();
+    console.log(inputs);
+    for (var input of inputs) {
        input.onmidimessage = getMIDIMessage;
     }
     loadSucceeded();
