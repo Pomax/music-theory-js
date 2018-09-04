@@ -97,7 +97,7 @@ class DrawBars {
         input.setAttribute("step", "1");
         input.setAttribute("max", "1000");
         input.setAttribute("value", bar.volume*inputFidelity);
-        input.addEventListener("change", evt => {
+        input.addEventListener("input", evt => {
             let v = parseFloat(input.value)/inputFidelity;
             bar.setVolume(v);
         });

@@ -26,7 +26,7 @@ class GainKnob {
         input.setAttribute("max", this.fidelity);
         input.setAttribute("value", this.value * this.fidelity);
 
-        input.addEventListener("change", evt => {
+        input.addEventListener("input", evt => {
             let v = parseFloat(input.value)/this.fidelity;
             this.setValue(v);
         });
