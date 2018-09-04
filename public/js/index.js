@@ -29,8 +29,9 @@ function onMidiSuccess(success) {
         input.onmidimessage = getMIDIMessage;
         deviceCount++;
     }
-    console.log(deviceCount);
-    loadSucceeded();
+    if (deviceCount > 0) {
+        loadSucceeded();
+    }
 }
 
 function onMidiFail() {
