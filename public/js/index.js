@@ -35,10 +35,14 @@ function getMIDIMessage(midiMessage) {
 };
 
 function onMidiSuccess(success) {
+    let deviceCount = 0;
     for (var input of success.inputs.values()) {
-       input.onmidimessage = getMIDIMessage;
+        input.onmidimessage = getMIDIMessage;
+        deviceCount++;
     }
-    loadSucceeded();
+    if (deviceCount > 0) {
+        loadSucceeded();
+    }
 }
 
 function onMidiFail() {
