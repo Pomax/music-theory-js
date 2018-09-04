@@ -24,11 +24,12 @@ function getMIDIMessage(midiMessage) {
 
 
 function onMidiSuccess(success) {
-    let inputs = success.inputs.values();
-    console.log(inputs.length);
-    for (var input of inputs) {
-       input.onmidimessage = getMIDIMessage;
+    let deviceCount = 0;
+    for (var input of success.inputs.values()) {
+        input.onmidimessage = getMIDIMessage;
+        deviceCount++;
     }
+    console.log(deviceCount);
     loadSucceeded();
 }
 
