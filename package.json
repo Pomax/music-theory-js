@@ -1,0 +1,14 @@
+{
+  "name": "music-theory",
+  "version": "1.0.0",
+  "description": "For when you want to do music things, using music theory, rather than just pressing some keys on a piano.",
+  "main": "music-theory.js",
+  "scripts": {
+    "test": "http-server public"
+  },
+  "author": "Pomax",
+  "license": "all rights reserved",
+  "dependencies": {
+    "http-server": "^0.11.1"
+  }
+}
