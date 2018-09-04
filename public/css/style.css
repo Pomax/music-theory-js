@@ -38,10 +38,16 @@ body {
 }
 
 #device {
+    display: inline-block;
+    padding: 0 2em 1em;
+}
+
+#device.led {
     position: absolute;
     bottom: 2em;
     left: 1em;
     display: block;
+    padding: 0;
     width: 7px;
     height: 7px;
     background: red;
@@ -49,7 +55,7 @@ body {
     z-index: 2;
     box-shadow: 1px 0px 4px inset #ffffffe6, 1px 1px 3px #000c;
 }
-#device.live {
+#device.led.live {
     background:#4ed209;
 }
 

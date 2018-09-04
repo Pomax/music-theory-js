@@ -1,15 +1,27 @@
 import { InputHandler } from "./input-handler.js";
 
+const device = document.getElementById('device');
+
 function loadSucceeded() {
-    document.getElementById('device').classList.add('live');
+    device.classList.add('live');
 }
 
 function loadFailed(msg) {
+    if (!device.classList.contains('led')) {
+        device.textContent = msg;
+    } else {
+        alert(msg);
+    }
     throw new Error(msg);
 }
 
 // Shortcut the process if we have no WebMIDI available.
-if (!navigator.requestMIDIAccess) { loadFailed("WebMIDI is not supported in this browser"); }
+if (!navigator.requestMIDIAccess) {
+    loadFailed("WebMIDI is not supported (without plugins?) in this browser.");
+}
+
+device.textContent='';
+device.classList.add('led');
 
 const handler = new InputHandler(document.getElementById('magic'));
 
@@ -22,7 +34,6 @@ function getMIDIMessage(midiMessage) {
     handler.handle(command, note, velocity);
 };
 
-
 function onMidiSuccess(success) {
     for (var input of success.inputs.values()) {
        input.onmidimessage = getMIDIMessage;
@@ -31,7 +42,7 @@ function onMidiSuccess(success) {
 }
 
 function onMidiFail() {
-    loadFailed("MIDI access request failed");
+    loadFailed("Web MIDI is available, but MIDI device access failed...");
 }
 
 // kick it all of.
