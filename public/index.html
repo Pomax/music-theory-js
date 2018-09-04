@@ -12,6 +12,7 @@
         <div id="magic">
             <span id="device"></span>
         </div>
+
         <script src="js/sounds.js" type="module"></script>
         <script src="js/drawbars.js" type="module"></script>
         <script src="js/keyboard.js" type="module"></script>
@@ -19,5 +20,25 @@
         <script src="js/arturia-minilab.js" type="module"></script>
         <script src="js/input-handler.js" type="module"></script>
         <script src="js/index.js" type="module"></script>
+
+        <div class="notice">
+            <p>
+                Hook up a MIDI controller and see if the "led" turns green. If it does:
+                you're good to go, go start playing and slide some draw bars! Tweak some
+                knobs, see what happens! Note that this works in Chrome, but not "out of
+                the box" in Firefox, mostly because Firefox has been spending the last
+                six years writing comments instead of just implementing the core for
+                Web MIDI so you need a plugin. I know, right? Crazy, but <a href="https://addons.mozilla.org/en-US/firefox/addon/web-midi-api/">easy
+                enought to add</a> (note that it links to 2 more things you'll need
+                installed. I thought that was worth it. Maybe you don't. Use Chrome
+                if you think addons are too much work).
+            </p>
+            <p>
+                Think this is cool? <a href="https://twitter.com/TheRealPomax">Shoot me an opinion!</a>.
+                For the code, have a look <a href="https://github.com/Pomax/music-theory-js/">here</a>,
+                but for the moment it's on a "look but don't take" basis. I'm still trying to get to
+                a v0.1-pre-alpha at the moment.
+            </p>
+        </div>
     </body>
 </html>

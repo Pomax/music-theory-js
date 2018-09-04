@@ -10,6 +10,17 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
+}
+
+.notice {
+    position: fixed;
+    bottom: 0;
+    width: 600px;
+    margin: auto;
+    text-align: justify;
+    font-family: sans-serif;
+    padding-bottom: 1em;
 }
 
 #magic {
