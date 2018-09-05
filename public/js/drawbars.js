@@ -27,7 +27,7 @@ class DrawBars {
 
     setupLFO(top) {
         var LFO = this.LFO = this.context.createOscillator();
-        LFO.type = LFO.SINE;
+        LFO.type = "sine";
         LFO.frequency.value = 3.0;
 
         var LFOGain = this.LFOGain = this.context.createGain();
@@ -171,7 +171,7 @@ class DrawBars {
         keyVolume.gain.value = 0;
 
         var oscillator = this.context.createOscillator();
-        oscillator.type = oscillator.SINE;
+        oscillator.type = "sine";
         oscillator.frequency.setValueAtTime(getFrequency(note + bar.offset), this.context.currentTime);
 
         this.LFOGain.connect(oscillator.frequency);

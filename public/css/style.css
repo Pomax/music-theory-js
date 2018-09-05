@@ -191,7 +191,9 @@ body {
 }
 
 .cell {
-    display: block;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
     width: 45%;
     height: calc(100% / 17);
     background: rgb(255, 230, 192);
@@ -219,7 +221,16 @@ body {
     box-shadow: 4px 0px 0px 0px rgb(172, 65, 65);
 }
 
-.cell.assign {
+.note-info {
+    display: inline-block;
+    width: 4em;
+    background-color: #928b7e;
+    color: white;
+    text-shadow: 1px 1px 0 black;
+    padding-top: 2px;
+    text-align: center;
+}
+.note-info.assign {
     border: 2px solid black;
     border-width: 2px 0;
     box-sizing: border-box;

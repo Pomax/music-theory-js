@@ -56,21 +56,19 @@ class Arranger {
     }
 
     demo() {
-        this.cells[0].setContent(Theory.nameToNumber('C3'), 64);
-        this.cells[4].setContent(Theory.nameToNumber('C3'), 64);
-        this.cells[8].setContent(Theory.nameToNumber('C3'), 64);
-        this.cells[12].setContent(Theory.nameToNumber('C3'), 64);
-
-        this.cells[14].setContent(Theory.nameToNumber('F3'), 64);
-        this.cells[15].setContent(Theory.nameToNumber('G3'), 64);
-
-        this.cells[16].setContent(Theory.nameToNumber('C3'), 64);
-        this.cells[20].setContent(Theory.nameToNumber('C3'), 64);
-        this.cells[24].setContent(Theory.nameToNumber('C3'), 64);
-        this.cells[28].setContent(Theory.nameToNumber('C3'), 64);
-
-        this.cells[30].setContent(Theory.nameToNumber('C4'), 64);
-        this.cells[31].setContent(Theory.nameToNumber('G4'), 64);
+        let id = 0;
+        this.cells[id++].setContent(48, 64, 4, 'major');
+        this.cells[id++].setContent(55, 64, 4);
+        this.cells[id++].setContent(60, 64, 4);
+        this.cells[id++].setContent(67, 64, 4);
+        this.cells[id++].setContent(63, 64, 8, '6/9');
+        this.cells[id++].setContent(60, 64, 8);
+        this.cells[id++].setContent(58, 64, 8);
+        this.cells[id++].setContent(55, 64, 8);
+        this.cells[id++].setContent(53, 64, 8, 'minor');
+        this.cells[id++].setContent(51, 64, 8);
+        this.cells[id++].setContent(48, 64, 8);
+        this.cells[id++].setContent(46, 64, 8);
         this.play();
     }
 

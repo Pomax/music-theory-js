@@ -56,15 +56,16 @@ class ProgramPlayer {
       step.end = tickCount + step.duration - correction;
       this.currentStep = step;
       this.playStep(step);
+    } else {
+      // if we tried all the steps and none of them
+      // have a playable duration, then just stop playing.
+      this.arranger.stop();
     }
   }
 
   playStep(step) {
-    this.arranger.markStep(step.stepCount);
-
     let notes = step.notes || [],
         velocity = step.velocity,
-        duration = step.duration || 0,
         arp = step.arp || 0,
         stops;
 
@@ -122,10 +123,15 @@ class ProgramPlayer {
 
   getNextStep() {
     let len = this.program.length;
-    this.step = this.program[this.stepCounter];
-    this.step.stepCount = this.stepCounter++;
-    if (this.stepCounter >= len) { this.stepCounter = 0; }
-    return this.step;
+    let iterCount = 0;
+    do {
+      this.step = this.program[this.stepCounter];
+      this.step.stepCount = this.stepCounter++;
+      this.arranger.markStep(this.step.stepCount);
+      if (this.stepCounter >= len) { this.stepCounter = 0; }
+      iterCount++;
+    } while (!this.step.duration && iterCount <= len);
+    return iterCount > len ? false : this.step;
   }
 };
 

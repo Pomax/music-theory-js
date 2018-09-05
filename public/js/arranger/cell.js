@@ -1,5 +1,6 @@
 import { ProgramPlayer } from "./program-player.js";
-
+import { INTERVALS } from "./intervals.js";
+import Theory from "../music-theory.js";
 
 class Cell {
     constructor(owner, top) {
@@ -8,7 +9,46 @@ class Cell {
 
         let div = this.div = document.createElement('div');
         div.classList.add('cell');
-        div.addEventListener("click", evt => this.assignNote(evt));
+
+        let noteinfo = this.noteinfo = document.createElement('span');
+        noteinfo.classList.add('note-info');
+        noteinfo.addEventListener("click", evt => this.assignNote(evt));
+        div.appendChild(noteinfo);
+
+        let duration = this.durationSelector = document.createElement('select');
+        let option = document.createElement('option');
+        option.textContent = '';
+        option.value = ''
+        option.selected = true;
+        duration.appendChild(option);
+        Object.keys(INTERVALS).forEach(t => {
+            let option = document.createElement('option');
+            option.textContent = t;
+            option.value = t;
+            duration.appendChild(option);
+        });
+        duration.addEventListener("change", evt => {
+            this.duration = evt.target.value;
+            this.owner.updateProgram();
+        });
+        div.appendChild(duration);
+
+        let chords = this.chordSelector = document.createElement('select');
+        option = document.createElement('option');
+        option.textContent = '';
+        option.value = ''
+        chords.appendChild(option);
+        Object.keys(Theory.chords).forEach(t => {
+            let option = document.createElement('option');
+            option.textContent = t;
+            option.value = t;
+            chords.appendChild(option);
+        });
+        chords.addEventListener("change", evt => {
+            this.chord = evt.target.value;
+            this.owner.updateProgram();
+        });
+        div.appendChild(chords);
 
         let clear = this.clear = document.createElement("button");
         clear.classList.add('cell-clear');
@@ -20,15 +60,16 @@ class Cell {
     }
 
     assignNote(evt) {
-        if (evt.target !== this.div) return;
+        if (evt.target !== this.noteinfo) return;
         this.listening = true;
-        this.div.classList.add('assign');
+        this.noteinfo.classList.add('assign');
     }
 
     getStep() {
         let options = {
             note: this.note ? this.note : 'C3',
-            duration: 16,
+            chord: this.chord,
+            duration: this.duration || 0,
             velocity: this.note ? this.velocity : 0
         };
         return ProgramPlayer.makeStep(options);
@@ -37,21 +78,36 @@ class Cell {
     press(note, velocity) {
         if (this.listening) {
             this.setContent(note, velocity);
-            this.div.classList.remove('assign');
+            this.noteinfo.classList.remove('assign');
             this.listening = false;
             this.owner.updateProgram();
         }
     }
 
-    setContent(note, velocity) {
+    setContent(note, velocity, duration, chord) {
         this.note = note;
         this.velocity = velocity;
         this.setText(`${note}-${velocity}`);
+        if (!this.duration || duration) {
+            this.setDuration(duration || 4);
+        }
+        if (chord) {
+            this.setChord(chord);
+        }
+    }
+
+    setDuration(d) {
+        this.durationSelector.value = d;
+        this.duration = d;
+    }
+
+    setChord(c) {
+        this.chordSelector.value = c;
+        this.chord = c;
     }
 
     setText(str) {
-        this.div.textContent = str;
-        this.div.appendChild(this.clear);
+        this.noteinfo.textContent = str;
         this.clear.disabled = false;
     }
 
@@ -61,6 +117,8 @@ class Cell {
         this.setText('');
         this.owner.updateProgram();
         this.clear.disabled = true;
+        this.setDuration('');
+        this.setChord('');
     }
 
     activate(synth) {
