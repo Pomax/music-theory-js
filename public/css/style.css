@@ -148,7 +148,7 @@ body {
     text-align: justify;
     font-family: sans-serif;
     padding-bottom: 1em;
-    animation: fadeout 3s ease-out 0s;
+    animation: fadeout 3s ease-out 4s;
     animation-fill-mode: forwards;
     z-index: 10;
 }
