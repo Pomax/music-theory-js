@@ -177,7 +177,7 @@ body {
     background: #428ad2;
     padding: 1em;
     border-radius: 0 1.5em 1.5em 0;
-    height: 76%;
+    height: 22em;
     box-shadow: 11px 11px 3px 1px #ffbf81;
     margin-left: 0.5em;
 }
@@ -279,4 +279,10 @@ body {
     color: white;
     font-weight: bold;
     text-shadow: 1px 1px 0 black;
+}
+
+.controls button {
+    background: orange;
+    border: 1px solid black;
+    margin: 2px;
 }
