@@ -1,7 +1,6 @@
 // "Don't worry about it, it's just a straight I-VI-II-IV".
+import { MODES } from "./modes.js";
 
-// offset so that I maps to [1], and ditch
-// the VIII because that's just the I
-const TONICS = [0].concat(modes.ionian.slice(0,7));
+const TONICS = [0].concat(MODES.ionian.slice(0,7));
 
 export { TONICS };

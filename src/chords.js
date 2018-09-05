@@ -1,4 +1,5 @@
 // The tools we use to harmonize music.
+
 const CHORDS = {
     m: [0,3,7],
   dim: [0,3,6],

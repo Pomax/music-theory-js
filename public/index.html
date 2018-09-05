@@ -9,10 +9,19 @@
         <link rel="stylesheet" href="css/range.css">
     </head>
     <body>
-        <div id="magic">
-            <span id="device">Waiting for Web MIDI to kick in...</span>
+        <div id="components">
+            <div id="synth">
+                <span id="device">Waiting for Web MIDI to kick in...</span>
+            </div>
+
+            <div id="composer">
+            </div>
         </div>
 
+        <!-- the one this repo actually exists for...-->
+        <script src="js/music-theory.js" type="module"></script>
+
+        <!-- all the code that I wrote to actually PLAY with music theory O_o -->
         <script src="js/sounds.js" type="module"></script>
         <script src="js/drawbars.js" type="module"></script>
         <script src="js/keyboard.js" type="module"></script>

@@ -1,6 +1,3 @@
-// our top container
-var top = document.getElementById('magic');
-
 class Keyboard {
     constructor(proxy, top) {
         this.proxy = proxy;

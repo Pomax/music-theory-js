@@ -13,17 +13,12 @@ body {
     flex-direction: column;
 }
 
-.notice {
-    position: fixed;
-    bottom: 0;
-    width: 600px;
-    margin: auto;
-    text-align: justify;
-    font-family: sans-serif;
-    padding-bottom: 1em;
+#components {
+    display: flex;
 }
 
-#magic {
+#synth {
+    display: inline-block;
     position: relative;
     max-width: 20em;
     padding-top: 1em;
@@ -35,6 +30,7 @@ body {
     align-self: center;
     justify-self: center;
     flex: 1 1 auto;
+    z-index: 1;
 }
 
 #device {
@@ -143,3 +139,88 @@ label {
     left: -25%;
 }
 
+.notice {
+    background: rgb(255, 247, 231);
+    position: fixed;
+    bottom: 0;
+    width: 600px;
+    margin: auto;
+    text-align: justify;
+    font-family: sans-serif;
+    padding-bottom: 1em;
+    animation: fadeout 3s ease-out 0s;
+    animation-fill-mode: forwards;
+    z-index: 10;
+}
+
+.notice:hover {
+    opacity: 1.0!important;
+    z-index: 10!important;
+}
+
+@keyframes fadeout {
+    0% {
+        opacity: 1.0;
+        z-index: 10;
+    }
+    100% {
+        opacity: 0.2;
+        z-index: 0;
+    }
+}
+
+#composer {
+    position: relative;
+    flex-direction: column;
+    min-width: 25rem;
+    display: flex;
+    background: #428ad2;
+    padding: 1em;
+    border-radius: 0 1.5em 1.5em 0;
+    height: 76%;
+    position: relative;
+    z-index: 2;
+    box-shadow: 11px 11px 3px 1px #ffbf81;
+    margin-left: 0.5em;
+}
+
+.controls {
+    position: absolute;
+    bottom: 1em;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+
+.cell {
+    display: block;
+    width: 100%;
+    height: 1.5em;
+    background: rgb(255, 230, 192);
+    font-family: monospace;
+    font-size: 90%;
+}
+
+.cell + .cell {
+    border-top: 1px solid rgba(0, 0, 0, 0.5);
+}
+
+.cell:first-child {
+    border-radius: 0 0.75em 0 0;
+}
+
+.cell.active {
+    background: rgb(255, 192, 192);
+}
+
+.cell.assign {
+    border: 2px solid black;
+    border-width: 2px 0;
+    box-sizing: border-box;
+    animation: wait-for-input 2s ease-in-out 0s infinite;
+}
+
+@keyframes wait-for-input {
+    0% { border-color: #080; }
+    50% { border-color: #0F0; }
+    100% { border-color: #080}
+}

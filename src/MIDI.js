@@ -38,4 +38,7 @@ const NOTES = {
      '9': 120,
   }
 
-export { NOTES, OCTAVES };
+export {
+  NOTES,
+  OCTAVES
+};

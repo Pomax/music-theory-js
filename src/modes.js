@@ -1,4 +1,5 @@
 // Those names you can never remember...
+
 const MODES = {
     ionian:     [0,2,4,5,7,9,11,12],
     dorian:     [0,2,3,5,7,9,10,12],
