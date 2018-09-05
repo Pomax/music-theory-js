@@ -2,49 +2,21 @@ import Theory from "../music-theory.js";
 import { Ticker } from "./ticker.js";
 import { INTERVALS } from "./intervals.js";
 
-function makeStep(options) {
-  options.originalNote = options.note;
-
-  // rewrite whole, half, quarter, etc to tick count
-  options.duration = INTERVALS[options.duration];
-
-  let note = options.note = Theory.nameToNumber(options.note);
-
-  if (note && !options.notes) {
-    options.notes = [note];
-  }
-
-  if (options.chord) {
-    let root = options.root = options.note;
-    options.notes = Theory.chord(root, options.chord, options.inversion);
-  }
-
-  if (options.additional) {
-    options.additional = options.additional.map(Theory.nameToNumber);
-  }
-
-  if (!options.end) { options.end = 0; }
-  if (!options.stop) { options.stop = () => {}; }
-  if (typeof options.velocity === "undefined") { options.velocity = 64; }
-
-
-  return options;
-}
-
 class ProgramPlayer {
-  static makeRest(duration=0) {
-    return { note: false, duration };
-  }
-
-
-
-  constructor(ui, BMP) {
-    this.ui = ui;
+  constructor(arranger, BMP) {
+    this.arranger = arranger;
     this.ticker = new Ticker(this, BMP);
     this.intervals = INTERVALS;
     this.step = this.getDummyStep()
     this.program = [this.step];
     this.reset();
+  }
+
+  setBPM(bpm) {
+    let tickDifference = this.ticker.setBPM(bpm);
+    this.program.forEach(step => {
+      step.end += tickDifference;
+    });
   }
 
   reset() {
@@ -66,6 +38,8 @@ class ProgramPlayer {
   }
 
   playProgramStep(tickCount) {
+    this.currentTickCount = tickCount;
+
     // Integer BPM is virtually guaranteed to require
     // fractional millisecond timeouts, which we can't
     // work with in JavaScript. Instead, we need to check
@@ -86,7 +60,7 @@ class ProgramPlayer {
   }
 
   playStep(step) {
-    this.ui.markStep(step.stepCount);
+    this.arranger.markStep(step.stepCount);
 
     let notes = step.notes || [],
         velocity = step.velocity,
@@ -111,14 +85,14 @@ class ProgramPlayer {
 
     // play all notes at the same time:
     if (!arp) {
-      stops = notes.map(note => this.ui.playNote(note, velocity));
+      stops = notes.map(note => this.arranger.playNote(note, velocity));
     }
 
     // play notes staggered:
     else {
       let delay = 0;
       stops = notes.map(note => {
-        let stop = this.ui.playNote(note, velocity, delay);
+        let stop = this.arranger.playNote(note, velocity, delay);
         delay += arp;
         return stop;
       });
@@ -155,6 +129,41 @@ class ProgramPlayer {
   }
 };
 
+function makeStep(options) {
+  options.originalNote = options.note;
+
+  // rewrite whole, half, quarter, etc to tick count
+  options.duration = INTERVALS[options.duration];
+
+  let note = options.note = Theory.nameToNumber(options.note);
+
+  if (note && !options.notes) {
+    options.notes = [note];
+  }
+
+  if (options.chord) {
+    let root = options.root = options.note;
+    options.notes = Theory.chord(root, options.chord, options.inversion);
+  }
+
+  if (options.additional) {
+    options.additional = options.additional.map(Theory.nameToNumber);
+  }
+
+  if (!options.end) { options.end = 0; }
+  if (!options.stop) { options.stop = () => {}; }
+  if (typeof options.velocity === "undefined") { options.velocity = 64; }
+
+  return options;
+}
+
 ProgramPlayer.makeStep = makeStep;
+
+function makeRest(duration=0) {
+  return { note: false, duration };
+}
+
+ProgramPlayer.makeRest = makeRest;
+
 
 export { ProgramPlayer };

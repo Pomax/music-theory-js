@@ -5,14 +5,22 @@ class Cell {
     constructor(owner, top) {
         this.owner = owner;
         this.content = false;
+
         let div = this.div = document.createElement('div');
         div.classList.add('cell');
         div.addEventListener("click", evt => this.assignNote(evt));
-        div.addEventListener("contextmenu", evt => this.empty(evt));
+
+        let clear = this.clear = document.createElement("button");
+        clear.classList.add('cell-clear');
+        clear.addEventListener("click", evt => this.empty(evt));
+        clear.textContent = 'X';
+
+        div.appendChild(clear);
         top.appendChild(div);
     }
 
     assignNote(evt) {
+        if (evt.target !== this.div) return;
         this.listening = true;
         this.div.classList.add('assign');
     }
@@ -20,7 +28,7 @@ class Cell {
     getStep() {
         let options = {
             note: this.note ? this.note : 'C3',
-            duration: 4,
+            duration: 16,
             velocity: this.note ? this.velocity : 0
         };
         return ProgramPlayer.makeStep(options);
@@ -43,6 +51,8 @@ class Cell {
 
     setText(str) {
         this.div.textContent = str;
+        this.div.appendChild(this.clear);
+        this.clear.disabled = false;
     }
 
     empty(evt) {
@@ -50,6 +60,7 @@ class Cell {
         this.note = false;
         this.setText('');
         this.owner.updateProgram();
+        this.clear.disabled = true;
     }
 
     activate(synth) {

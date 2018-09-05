@@ -3,7 +3,7 @@ import { GainKnob } from "./knob.js";
 import { DrawBars } from "./drawbars.js";
 import { OP } from "./midi-codes.js";
 import { KNOBS } from "./arturia-minilab.js";
-import { ComposerUI } from "./composer/ui.js";
+import { Arranger } from "./arranger/arranger.js";
 class InputHandler {
 
   constructor(top) {
@@ -23,7 +23,7 @@ class InputHandler {
     this.generators = {};
 
     // add a composer so we can do nice music things
-    this.composer = new ComposerUI(this, document.getElementById('composer'));
+    this.arranger = new Arranger(this, document.getElementById('arranger'));
 
   }
 
@@ -46,7 +46,7 @@ class InputHandler {
 
   press(note, velocity, delay=0) {
     this.playNote(note, velocity, delay);
-    this.composer.press(note, velocity);
+    this.arranger.press(note, velocity);
   }
 
   // must return a stop() function
