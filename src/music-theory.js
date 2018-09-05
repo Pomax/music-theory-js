@@ -1,5 +1,5 @@
 import { CHORDS } from "./chords.js";
-import { MODES } from "./chords.js";
+import { MODES } from "./modes.js";
 import { TONICS } from "./tonics.js";
 import { NOTES, OCTAVES } from "./MIDI.js";
 import { CIRCLE } from "./circle.js";
@@ -32,8 +32,8 @@ function invert(notes, shift) {
 }
 
 export default {
-  notes,
-  octaves,
+  notes: NOTES,
+  octaves: OCTAVES,
   nameToNumber,
 
   modes: MODES,
@@ -45,4 +45,7 @@ export default {
   chords: CHORDS,
   invert,
   chord: (note, type, inversion=0) => invert(CHORDS[type].map(offset(nameToNumber(note))), inversion),
+
+  circle: CIRCLE,
 };
+

@@ -13,17 +13,12 @@ body {
     flex-direction: column;
 }
 
-.notice {
-    position: fixed;
-    bottom: 0;
-    width: 600px;
-    margin: auto;
-    text-align: justify;
-    font-family: sans-serif;
-    padding-bottom: 1em;
+#components {
+    display: flex;
 }
 
-#magic {
+#synth {
+    display: inline-block;
     position: relative;
     max-width: 20em;
     padding-top: 1em;
@@ -35,6 +30,7 @@ body {
     align-self: center;
     justify-self: center;
     flex: 1 1 auto;
+    z-index: 1;
 }
 
 #device {
@@ -79,7 +75,7 @@ body {
     display: inline-block;
 }
 
-label {
+#synth label {
     font-family: sans-serif;
     font-variant: small-caps;
     text-align: center;
@@ -143,3 +139,144 @@ label {
     left: -25%;
 }
 
+.notice {
+    background: rgb(255, 247, 231);
+    position: fixed;
+    bottom: 0;
+    width: 600px;
+    margin: auto;
+    text-align: justify;
+    font-family: sans-serif;
+    padding-bottom: 1em;
+    animation: fadeout 3s ease-out 0s;
+    animation-fill-mode: forwards;
+    z-index: 10;
+}
+
+.notice:hover {
+    opacity: 1.0!important;
+    z-index: 10!important;
+}
+
+@keyframes fadeout {
+    0% {
+        opacity: 1.0;
+        z-index: 10;
+    }
+    100% {
+        opacity: 0.2;
+        z-index: 0;
+    }
+}
+
+#arranger {
+    position: relative;
+    z-index: 2;
+    min-width: 25rem;
+    display: flex;
+    background: #428ad2;
+    padding: 1em;
+    border-radius: 0 1.5em 1.5em 0;
+    height: 76%;
+    box-shadow: 11px 11px 3px 1px #ffbf81;
+    margin-left: 0.5em;
+}
+
+.cells {
+    display: flex;
+    flex-flow: column wrap;
+    align-content: space-around;
+    height: calc(100% - 2em);
+    width: 100%;
+}
+
+.cell {
+    display: block;
+    width: 45%;
+    height: calc(100% / 17);
+    background: rgb(255, 230, 192);
+    font-family: monospace;
+    font-size: 90%;
+    box-shadow: 4px 0px 0px 0px #ffbf81;
+    overflow: hidden;
+}
+
+.cell + .cell {
+    border-top: 1px solid rgba(0, 0, 0, 0.5);
+}
+
+.cell:nth-child(17) {
+    border-radius: 0 0.75em 0 0;
+}
+
+.cell.active {
+    background: rgb(255, 192, 192);
+    box-shadow: 4px 0px 0px 0px rgb(172, 65, 65);
+}
+
+.cell:nth-child(4n + 1).active {
+    background: rgb(138, 193, 255);
+    box-shadow: 4px 0px 0px 0px rgb(172, 65, 65);
+}
+
+.cell.assign {
+    border: 2px solid black;
+    border-width: 2px 0;
+    box-sizing: border-box;
+    animation: wait-for-input 2s ease-in-out 0s infinite;
+}
+
+@keyframes wait-for-input {
+    0% { border-color: #080; }
+    50% { border-color: #0F0; }
+    100% { border-color: #080}
+}
+
+.cell-clear {
+    float: right;
+    position: relative;
+    height: 130%;
+    width: 1.5em;
+    margin-top: -3%;
+    font-family: Verdana;
+    top: 2px;
+    font-size: 1em;
+    background: inherit;
+    border: none;
+    text-shadow: 1px 1px 0 white;
+    color: #b46624;
+    cursor: pointer;
+}
+
+.controls {
+    position: absolute;
+    bottom: 1em;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: 100%;
+    text-align: center;
+}
+
+.controls label {
+    font-family: sans-serif;
+    font-size: 1.1em;
+    font-weight: bold;
+    text-shadow: 1px 1px 0 black, -1px -1px 0 white;
+    color: #46a1f9;
+    vertical-align: -2px;
+    margin: auto 1em;
+}
+
+.controls input[type=number] {
+    width: 3em;
+    font-family: monospace;
+    border: none;
+    height: 0.8em;
+    vertical-align: 2px;
+    font-size: 1rem;
+    text-align: center;
+    background: #5e9ddb;
+    color: white;
+    font-weight: bold;
+    text-shadow: 1px 1px 0 black;
+}

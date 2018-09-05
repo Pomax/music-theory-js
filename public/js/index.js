@@ -23,7 +23,7 @@ if (!navigator.requestMIDIAccess) {
 device.textContent='';
 device.classList.add('led');
 
-const handler = new InputHandler(document.getElementById('magic'));
+const handler = new InputHandler(document.getElementById('synth'));
 
 // router function
 function getMIDIMessage(midiMessage) {

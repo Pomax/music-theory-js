@@ -3,7 +3,7 @@ import { GainKnob } from "./knob.js";
 import { DrawBars } from "./drawbars.js";
 import { OP } from "./midi-codes.js";
 import { KNOBS } from "./arturia-minilab.js";
-
+import { Arranger } from "./arranger/arranger.js";
 class InputHandler {
 
   constructor(top) {
@@ -21,6 +21,10 @@ class InputHandler {
 
     // key source tracking
     this.generators = {};
+
+    // add a composer so we can do nice music things
+    this.arranger = new Arranger(this, document.getElementById('arranger'));
+
   }
 
   handle(command, note, velocity) {
@@ -40,10 +44,22 @@ class InputHandler {
     }
   }
 
-  press(note, velocity) {
+  press(note, velocity, delay=0) {
+    this.playNote(note, velocity, delay);
+    this.arranger.press(note, velocity);
+  }
+
+  // must return a stop() function
+  playNote(note, velocity, delay=0) {
+    if (velocity === 0) return ()=>{};
+
     let source = this.generators[note] = this.drawbars.getSound(note, velocity);
-    source.start();
-    this.keyboard.press(note);
+    setTimeout(() => {
+      source.start();
+      this.keyboard.press(note, velocity);
+    }, delay);
+
+    return () => this.release(note);
   }
 
   release(note) {

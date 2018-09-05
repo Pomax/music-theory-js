@@ -1,4 +1,6 @@
 // Look everybody, it's the circle of fifths!
+
+// The standard circle is the "major" circle
 const CIRCLE = {
     sharps: {
         'C' : [],
@@ -22,6 +24,8 @@ const CIRCLE = {
         'Cb': ['Bb', 'Eb', 'Ab', 'Db', 'Gb', 'Cb', 'Fb']
     }
 };
+
+// but we want the "minor" circle, too.
 
 CIRCLE.sharps['a']  = CIRCLE.sharps['C'];
 CIRCLE.sharps['e']  = CIRCLE.sharps['G'];
