@@ -1,4 +1,4 @@
-import { InputHandler } from "./input-handler.js";
+import { Synth } from "./synth.js";
 
 const device = document.getElementById('device');
 
@@ -23,7 +23,7 @@ if (!navigator.requestMIDIAccess) {
 device.textContent='';
 device.classList.add('led');
 
-const handler = new InputHandler(document.getElementById('synth'));
+const handler = new Synth(document.getElementById('synth'));
 
 // router function
 function getMIDIMessage(midiMessage) {

@@ -51,6 +51,7 @@ body {
     z-index: 2;
     box-shadow: 1px 0px 4px inset #ffffffe6, 1px 1px 3px #000c;
 }
+
 #device.led.live {
     background:#4ed209;
 }
@@ -140,33 +141,11 @@ body {
 }
 
 .notice {
-    background: rgb(255, 247, 231);
-    position: fixed;
-    bottom: 0;
     width: 600px;
     margin: auto;
     text-align: justify;
     font-family: sans-serif;
-    padding-bottom: 1em;
-    animation: fadeout 3s ease-out 4s;
-    animation-fill-mode: forwards;
-    z-index: 10;
-}
-
-.notice:hover {
-    opacity: 1.0!important;
-    z-index: 10!important;
-}
-
-@keyframes fadeout {
-    0% {
-        opacity: 1.0;
-        z-index: 10;
-    }
-    100% {
-        opacity: 0.2;
-        z-index: 0;
-    }
+    margin: 2em;
 }
 
 #arranger {

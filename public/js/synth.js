@@ -4,7 +4,7 @@ import { DrawBars } from "./drawbars.js";
 import { OP } from "./midi-codes.js";
 import { KNOBS } from "./arturia-minilab.js";
 import { Arranger } from "./arranger/arranger.js";
-class InputHandler {
+class Synth {
 
   constructor(top) {
     // master audio context
@@ -87,4 +87,4 @@ class InputHandler {
   }
 }
 
-export { InputHandler };
+export { Synth };
