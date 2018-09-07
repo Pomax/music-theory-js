@@ -2,6 +2,9 @@ import Theory from "../music-theory.js";
 import { Ticker } from "./ticker.js";
 import { INTERVALS } from "./intervals.js";
 
+/**
+ *
+ */
 class ProgramPlayer {
   constructor(arranger, BMP) {
     this.arranger = arranger;

@@ -2,6 +2,9 @@ import { ProgramPlayer } from "./program-player.js";
 import { INTERVALS } from "./intervals.js";
 import Theory from "../music-theory.js";
 
+/**
+ *
+ */
 class Cell {
     constructor(owner, top) {
         this.owner = owner;

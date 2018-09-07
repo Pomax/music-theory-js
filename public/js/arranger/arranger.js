@@ -8,8 +8,8 @@ import { ProgramPlayer } from "./program-player.js";
 //       an arranger only have one instrument?
 
 class Arranger {
-    constructor(instrument, top) {
-        this.instrument = instrument;
+    constructor(router, top) {
+        this.router = router;
 
         this.cellCount = 32;
         let cellContainer = top.querySelector('.cells');
@@ -87,7 +87,15 @@ class Arranger {
     }
 
     playNote(note, velocity, delay) {
-        return this.instrument.playNote(note, velocity, delay);
+        let fn = () => this.router.signalnoteon(0, note, velocity);
+
+        if (!delay) {
+            fn();
+        } else {
+            setTimeout(fn, delay);
+        }
+
+        return () => this.router.signalnoteoff(0, note, 0);
     }
 
     buildProgram() {

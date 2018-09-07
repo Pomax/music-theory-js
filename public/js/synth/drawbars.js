@@ -1,13 +1,19 @@
 import { getFrequency } from "./sounds.js";
-import { GainKnob } from "./knob.js";
+import { GainKnob } from "./ui/knob.js";
+import { code } from "../router/midi-codes.js";
 
 const modes = {
     original: [-12, 0, 7, 12, 19, 26, 31, 38],
 }
 
+/**
+ *
+ */
 class DrawBars {
 
-    constructor(top, context, masterGain) {
+    constructor(router, top, context, masterGain) {
+        router.addListener(this, "control");
+
         this.context = context;
         this.masterGain = masterGain;
 
@@ -54,19 +60,23 @@ class DrawBars {
         }
     }
 
+    onControl(controller, value) {
+        let bar = this.DRAW_BARS[controller];
+        if (bar) bar.setVolume(value / 127);
+    }
+
     bindDrawBars(top, context) {
         let tones = modes[this.mode]
+        let DRAW_BARS = this.DRAW_BARS = [];
 
-        this.DRAW_BARS = [
-            { offset: tones[0], node: context.createGain(), volume: 0.4, label: "sub-octave" },
-            { offset: tones[1], node: context.createGain(), volume: 1.0, label: "primary" },
-            { offset: tones[2], node: context.createGain(), volume: 0.6, label: "quint" },
-            { offset: tones[3], node: context.createGain(), volume: 0.4, label: "octave" },
-            { offset: tones[4], node: context.createGain(), volume: 0.2, label: "harmony 1" },
-            { offset: tones[5], node: context.createGain(), volume: 0.1, label: "harmony 2" },
-            { offset: tones[6], node: context.createGain(), volume: 0.0, label: "harmony 3" },
-            { offset: tones[7], node: context.createGain(), volume: 0.0, label: "harmony 4" }
-        ];
+        DRAW_BARS[code('General Purpose Slider 1')] = { offset: tones[0], node: context.createGain(), volume: 0.4, label: "sub-octave" };
+        DRAW_BARS[code('General Purpose Slider 2')] = { offset: tones[1], node: context.createGain(), volume: 1.0, label: "primary"};
+        DRAW_BARS[code('General Purpose Slider 3')] = { offset: tones[2], node: context.createGain(), volume: 0.6, label: "quint"};
+        DRAW_BARS[code('General Purpose Slider 4')] = { offset: tones[3], node: context.createGain(), volume: 0.4, label: "octave"};
+        DRAW_BARS[20] = { offset: tones[4], node: context.createGain(), volume: 0.2, label: "harmony 1"};
+        DRAW_BARS[21] = { offset: tones[5], node: context.createGain(), volume: 0.1, label: "harmony 2"};
+        DRAW_BARS[22] = { offset: tones[6], node: context.createGain(), volume: 0.0, label: "harmony 3"};
+        DRAW_BARS[23] = { offset: tones[7], node: context.createGain(), volume: 0.0, label: "harmony 4"};
 
         this.bootstrap(top);
     }
