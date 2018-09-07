@@ -1,4 +1,5 @@
 import { Synth } from "./synth.js";
+import { MIDIRouter } from "./router/router.js";
 
 const device = document.getElementById('device');
 
@@ -23,15 +24,17 @@ if (!navigator.requestMIDIAccess) {
 device.textContent='';
 device.classList.add('led');
 
-const handler = new Synth(document.getElementById('synth'));
+//const handler = new Synth(document.getElementById('synth'));
+const router = new MIDIRouter();
 
 // router function
 function getMIDIMessage(midiMessage) {
     var data = midiMessage.data;
-    var command = data[0];
-    var note = data[1];
-    var velocity = (data.length > 2) ? data[2] : 0;
-    handler.handle(command, note, velocity);
+    router.receive(data);
+//    var command = data[0];
+//    var note = data[1];
+//    var velocity = (data.length > 2) ? data[2] : 0;
+//    handler.handle(command, note, velocity);
 };
 
 function onMidiSuccess(success) {
