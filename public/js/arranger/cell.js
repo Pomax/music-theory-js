@@ -1,6 +1,7 @@
 import { ProgramPlayer } from "./program-player.js";
 import { INTERVALS } from "./intervals.js";
 import Theory from "../music-theory.js";
+import { router } from "../router/router.js";
 
 /**
  *
@@ -64,8 +65,8 @@ class Cell {
 
     assignNote(evt) {
         if (evt.target !== this.noteinfo) return;
-        this.listening = true;
         this.noteinfo.classList.add('assign');
+        router.addListener(this, "noteon");
     }
 
     getStep() {
@@ -78,13 +79,11 @@ class Cell {
         return ProgramPlayer.makeStep(options);
     }
 
-    press(note, velocity) {
-        if (this.listening) {
-            this.setContent(note, velocity);
-            this.noteinfo.classList.remove('assign');
-            this.listening = false;
-            this.owner.updateProgram();
-        }
+    onNoteOn(note, velocity) {
+        router.removeListener(this, "noteon");
+        this.setContent(note, velocity);
+        this.noteinfo.classList.remove('assign');
+        this.owner.updateProgram();
     }
 
     setContent(note, velocity, duration, chord) {
@@ -118,10 +117,10 @@ class Cell {
         if (evt) { evt.preventDefault(); }
         this.note = false;
         this.setText('');
-        this.owner.updateProgram();
-        this.clear.disabled = true;
         this.setDuration('');
         this.setChord('');
+        this.owner.updateProgram();
+        this.clear.disabled = true;
     }
 
     activate(synth) {
