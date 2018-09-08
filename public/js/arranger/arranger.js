@@ -1,19 +1,16 @@
 // And this import... is what this whole repo is for.
 import Theory from "../music-theory.js";
 
-import { Cell } from "./cell.js";
 import { ProgramPlayer } from "./program-player.js";
 import { router } from "../router/router.js";
+import { Pattern } from "./pattern.js";
 
 // TODO: silly limitation for now of course: why would
 //       an arranger only have one instrument?
 
 class Arranger {
     constructor(top) {
-        this.cellCount = 32;
-        let cellContainer = top.querySelector('.cells');
-        this.cells = [...(new Array(this.cellCount))].map(_ => new Cell(this, cellContainer));
-        this.currentCell = -1;
+        this.pattern = new Pattern(this, top.querySelector('.cells'));
 
         let controls = document.createElement("div");
         controls.classList.add('controls');
@@ -55,19 +52,7 @@ class Arranger {
     }
 
     demo() {
-        let id = 0;
-        this.cells[id++].setContent(48, 64, 4, 'major');
-        this.cells[id++].setContent(55, 64, 4);
-        this.cells[id++].setContent(60, 64, 4);
-        this.cells[id++].setContent(67, 64, 4);
-        this.cells[id++].setContent(63, 64, 8, '6/9');
-        this.cells[id++].setContent(60, 64, 8);
-        this.cells[id++].setContent(58, 64, 8);
-        this.cells[id++].setContent(55, 64, 8);
-        this.cells[id++].setContent(53, 64, 8, 'minor');
-        this.cells[id++].setContent(51, 64, 8);
-        this.cells[id++].setContent(48, 64, 8);
-        this.cells[id++].setContent(46, 64, 8);
+        this.pattern.demo();
         this.play();
     }
 
@@ -77,7 +62,7 @@ class Arranger {
     }
 
     updateProgram() {
-        this.player.setProgram(this.buildProgram());
+        this.player.setProgram(this.pattern.buildProgram());
     }
 
     stop() {
@@ -97,19 +82,8 @@ class Arranger {
         return () => router.signalnoteoff(0, note, 0);
     }
 
-    buildProgram() {
-        return this.cells.map(cell => cell.getStep());
-    }
-
-    press(note, velocity) {
-        this.cells.forEach(c => c.press(note, velocity));
-    }
-
     markStep(step) {
-        let len = this.cells.length;
-        let pstep = (step + len - 1) % len;
-        this.cells[pstep].deactivate();
-        this.cells[step].activate();
+        this.pattern.markStep(step);
     }
 }
 
