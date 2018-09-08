@@ -1,3 +1,6 @@
+/**
+ *
+ */
 class Ticker {
   constructor(receiver, BPM) {
     this.receiver = receiver;

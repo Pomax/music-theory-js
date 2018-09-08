@@ -1,8 +1,12 @@
-import { Synth } from "./synth.js";
+import { router } from "./router/router.js";
+import { Synth } from "./synth/synth.js";
+import { Arranger } from "./arranger/arranger.js";
 
 const device = document.getElementById('device');
 
 function loadSucceeded() {
+    new Synth(document.getElementById('synth'));
+    new Arranger(document.getElementById('arranger'));
     device.classList.add('live');
 }
 
@@ -23,15 +27,14 @@ if (!navigator.requestMIDIAccess) {
 device.textContent='';
 device.classList.add('led');
 
-const handler = new Synth(document.getElementById('synth'));
-
 // router function
 function getMIDIMessage(midiMessage) {
     var data = midiMessage.data;
-    var command = data[0];
-    var note = data[1];
-    var velocity = (data.length > 2) ? data[2] : 0;
-    handler.handle(command, note, velocity);
+    var status = data[0];
+    var type = (status & 0xF0) >> 4;
+    var channel = (status & 0x0F);
+    var data = data.slice(1);
+    router.receive(type, channel, data);
 };
 
 function onMidiSuccess(success) {

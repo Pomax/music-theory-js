@@ -1,6 +1,13 @@
+import { router } from "../router/router.js";
+
+/**
+ *
+ */
 class Keyboard {
-    constructor(proxy, top) {
-        this.proxy = proxy;
+    constructor(top) {
+        router.addListener(this, "noteon");
+        router.addListener(this, "noteoff");
+
         this.keys = {};
         this.board = document.createElement("div");
         this.board.classList.add('board');
@@ -52,19 +59,28 @@ class Keyboard {
         e.classList.add('key');
 
         const uuid = Date.now() + Math.random();
+
         const fn = evt => {
-            this.proxy.release(note);
+            router.signalnoteoff(0, note, 0);
             document.removeEventListener("mouseup", fn);
         };
 
         e.addEventListener("mousedown", evt => {
-            this.proxy.press(note, 65);
+            router.signalnoteon(0, note, 65);
             document.addEventListener("mouseup", fn);
         });
 
         this.board.appendChild(e);
         this.keys[note] = e;
         return e;
+    }
+
+    onNoteOn(note, velocity) {
+        this.press(note);
+    }
+
+    onNoteOff(note, velocity) {
+        this.release(note);
     }
 
     press(note) {

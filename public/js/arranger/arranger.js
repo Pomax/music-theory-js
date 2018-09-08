@@ -3,14 +3,13 @@ import Theory from "../music-theory.js";
 
 import { Cell } from "./cell.js";
 import { ProgramPlayer } from "./program-player.js";
+import { router } from "../router/router.js";
 
 // TODO: silly limitation for now of course: why would
 //       an arranger only have one instrument?
 
 class Arranger {
-    constructor(instrument, top) {
-        this.instrument = instrument;
-
+    constructor(top) {
         this.cellCount = 32;
         let cellContainer = top.querySelector('.cells');
         this.cells = [...(new Array(this.cellCount))].map(_ => new Cell(this, cellContainer));
@@ -87,7 +86,15 @@ class Arranger {
     }
 
     playNote(note, velocity, delay) {
-        return this.instrument.playNote(note, velocity, delay);
+        let fn = () => router.signalnoteon(0, note, velocity);
+
+        if (!delay) {
+            fn();
+        } else {
+            setTimeout(fn, delay);
+        }
+
+        return () => router.signalnoteoff(0, note, 0);
     }
 
     buildProgram() {

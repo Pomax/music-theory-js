@@ -1,13 +1,21 @@
 import { getFrequency } from "./sounds.js";
-import { GainKnob } from "./knob.js";
+import { GainKnob } from "./ui/knob.js";
+import { router } from "../router/router.js";
+import { code } from "../router/midi-codes.js";
+import { LabelBar } from "./ui/label-bar.js";
 
 const modes = {
     original: [-12, 0, 7, 12, 19, 26, 31, 38],
 }
 
+/**
+ *
+ */
 class DrawBars {
 
     constructor(top, context, masterGain) {
+        router.addListener(this, "control");
+
         this.context = context;
         this.masterGain = masterGain;
 
@@ -54,19 +62,23 @@ class DrawBars {
         }
     }
 
+    onControl(controller, value) {
+        let bar = this.DRAW_BARS[controller];
+        if (bar) bar.setValue(value / 127);
+    }
+
     bindDrawBars(top, context) {
         let tones = modes[this.mode]
+        let DRAW_BARS = this.DRAW_BARS = [];
 
-        this.DRAW_BARS = [
-            { offset: tones[0], node: context.createGain(), volume: 0.4, label: "sub-octave" },
-            { offset: tones[1], node: context.createGain(), volume: 1.0, label: "primary" },
-            { offset: tones[2], node: context.createGain(), volume: 0.6, label: "quint" },
-            { offset: tones[3], node: context.createGain(), volume: 0.4, label: "octave" },
-            { offset: tones[4], node: context.createGain(), volume: 0.2, label: "harmony 1" },
-            { offset: tones[5], node: context.createGain(), volume: 0.1, label: "harmony 2" },
-            { offset: tones[6], node: context.createGain(), volume: 0.0, label: "harmony 3" },
-            { offset: tones[7], node: context.createGain(), volume: 0.0, label: "harmony 4" }
-        ];
+        DRAW_BARS[code('General Purpose Slider 1')] = { offset: tones[0], node: context.createGain(), value: 0.4, label: "sub-octave" };
+        DRAW_BARS[code('General Purpose Slider 2')] = { offset: tones[1], node: context.createGain(), value: 1.0, label: "primary"};
+        DRAW_BARS[code('General Purpose Slider 3')] = { offset: tones[2], node: context.createGain(), value: 0.6, label: "quint"};
+        DRAW_BARS[code('General Purpose Slider 4')] = { offset: tones[3], node: context.createGain(), value: 0.4, label: "octave"};
+        DRAW_BARS[20] = { offset: tones[4], node: context.createGain(), value: 0.2, label: "harmony 1"};
+        DRAW_BARS[21] = { offset: tones[5], node: context.createGain(), value: 0.1, label: "harmony 2"};
+        DRAW_BARS[22] = { offset: tones[6], node: context.createGain(), value: 0.0, label: "harmony 3"};
+        DRAW_BARS[23] = { offset: tones[7], node: context.createGain(), value: 0.0, label: "harmony 4"};
 
         this.bootstrap(top);
     }
@@ -85,47 +97,26 @@ class DrawBars {
     }
 
     setupDrawBar(bar) {
-        bar.node.gain.value = bar.volume;
-        let div =  document.createElement("div");
-        let label = document.createElement("label");
-        label.textContent = bar.label;
-        div.appendChild(label);
-        let input = bar.controller = document.createElement("input");
-        let inputFidelity = 1000;
-        input.setAttribute("type", "range");
-        input.setAttribute("min", "0");
-        input.setAttribute("step", "1");
-        input.setAttribute("max", "1000");
-        input.setAttribute("value", bar.volume*inputFidelity);
-        input.addEventListener("input", evt => {
-            let v = parseFloat(input.value)/inputFidelity;
-            bar.setVolume(v);
-        });
-        div.appendChild(input);
-        this.container.appendChild(div);
-
-        bar.setVolume = v => {
-            bar.volume = v;
-            bar.node.gain.value = v;
-            let value = (v * inputFidelity)|0;
-            bar.controller.value = value;
-            this.normalize();
-        };
+        bar.node.gain.value = bar.value;
+        bar.ui = new LabelBar({
+            list: this.DRAW_BARS,
+            onSetValue: () => this.normalize()
+        }, bar, this.container);
     }
 
     normalize() {
-        let sum = this.DRAW_BARS.reduce( (tally, bar) => tally + bar.volume, 0 );
+        let sum = this.DRAW_BARS.reduce( (tally, bar) => tally + bar.value, 0 );
         this.normalizer.setValue(1 / sum);
     }
 
     adjust(idx, v) {
         let bar = this.DRAW_BARS[idx];
         let step = 0.01 * (v===64 ? 0 : v-64);
-        let volume = bar.volume;
+        let volume = bar.value;
         volume += step;
         if (volume < 0) volume = 0;
         if (volume > 1) volume = 1;
-        bar.setVolume(volume);
+        bar.setValue(volume);
     }
 
     adjustLFOSpeed(v) {
