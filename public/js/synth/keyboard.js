@@ -1,9 +1,10 @@
+import { router } from "../router/router.js";
+
 /**
  *
  */
 class Keyboard {
-    constructor(router, top) {
-        this.router = router;
+    constructor(top) {
         router.addListener(this, "noteon");
         router.addListener(this, "noteoff");
 
@@ -60,12 +61,12 @@ class Keyboard {
         const uuid = Date.now() + Math.random();
 
         const fn = evt => {
-            this.router.signalnoteoff(0, note, 0);
+            router.signalnoteoff(0, note, 0);
             document.removeEventListener("mouseup", fn);
         };
 
         e.addEventListener("mousedown", evt => {
-            this.router.signalnoteon(0, note, 65);
+            router.signalnoteon(0, note, 65);
             document.addEventListener("mouseup", fn);
         });
 

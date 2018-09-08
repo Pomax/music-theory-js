@@ -30,6 +30,10 @@ class MIDIRouter {
         this[`${eventType}Listeners`].removeListener(listener, channel);
     }
 
+    learnCC(resultHandler) {
+        this.learning = resultHandler;
+    }
+
     receive(status, channel, data) {
         let handler = STATUS_TYPES[status].toLowerCase();
         try {
@@ -66,6 +70,14 @@ class MIDIRouter {
     control(channel, data) {
         var controller = data[0];
         var value = data[1];
+
+        if (this.learning) {
+            // CC learning is a beautiful thing
+            let handler = this.learning;
+            this.learning = undefined;
+            return handler(controller);
+        }
+
         this.signalcontrol(channel, controller, value);
     }
 
@@ -98,4 +110,6 @@ class MIDIRouter {
     }
 }
 
-export { MIDIRouter };
+const router = new MIDIRouter();
+
+export { router };

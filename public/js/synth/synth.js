@@ -1,33 +1,61 @@
 import { Keyboard } from "./keyboard.js";
-import { GainKnob } from "./ui/knob.js";
 import { DrawBars } from "./drawbars.js";
 import { code } from "../router/midi-codes.js";
+import { LabelBar } from "./ui/label-bar.js";
+import { router } from "../router/router.js";
+
+const volumeCode = code('Volume (coarse)');
 
 /**
  *
  */
 class Synth {
 
-  constructor(router, top) {
+  constructor(top) {
 
     router.addListener(this, "noteon");
     router.addListener(this, "noteoff");
     router.addListener(this, "control");
 
     // master audio context
-    this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const context = this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-    // master volume control
-    this.masterVolumeKnob = new GainKnob(top, this.audioCtx, "volume", 0.2);
+    this.masterVolume = {
+      node: context.createGain(),
+      value: 0.8,
+      label: "volume",
+      setValue: v => {
+        this.masterVolume.node.gain = v;
+      }
+    };
+    this.masterVolume.node.connect(context.destination);
+
+    // At the top level we only have a single controller,
+    // so it might seem a bit silly to use a full controller
+    // list, but it keeps the rest of the code homogeneous.
+    this.controllers = [];
+    this.controllers[volumeCode] = this.masterVolume;
+    this.masterVolume.ui = new LabelBar(
+      {
+        list: this.controllers,
+        onSetValue: (bar, value) => {
+          //this.masterVolume.node.value = value;
+        }
+      },
+      this.masterVolume,
+      top
+    );
+
+    //new GainKnob(top, this.audioCtx, "volume", 0.2);
 
     // key source tracking
     this.generators = {};
 
     // draw bars
-    this.drawbars = new DrawBars(router, top, this.audioCtx, this.masterVolumeKnob.node);
+    this.drawbars = new DrawBars(top, this.audioCtx, this.masterVolume.node);
 
     // keyboard visualisation
-    this.keyboard = new Keyboard(router, top);
+    this.keyboard = new Keyboard(top);
   }
 
   onNoteOn(note, velocity) {
@@ -55,8 +83,9 @@ class Synth {
   }
 
   handleController(controller, value) {
-    if (controller === code('Volume (coarse)'))  {
-      this.masterVolumeKnob.setValue(value/127);
+    let cc = this.controllers[controller];
+    if (cc) {
+      cc.setValue(value/127);
     }
   }
 }

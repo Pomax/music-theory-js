@@ -1,13 +1,12 @@
-import { MIDIRouter } from "./router/router.js";
+import { router } from "./router/router.js";
 import { Synth } from "./synth/synth.js";
 import { Arranger } from "./arranger/arranger.js";
 
-const router = new MIDIRouter();
 const device = document.getElementById('device');
 
 function loadSucceeded() {
-    new Synth(router, document.getElementById('synth'));
-    new Arranger(router, document.getElementById('arranger'));
+    new Synth(document.getElementById('synth'));
+    new Arranger(document.getElementById('arranger'));
     device.classList.add('live');
 }
 
