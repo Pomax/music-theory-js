@@ -47,7 +47,24 @@ const MODES = {
 
 // "Don't worry about it, it's just a straight I-VI-II-IV".
 
-const TONICS = [0].concat(MODES.ionian.slice(0,7));
+const TONICS = [0].concat(MODES.ionian);
+
+const TONIC_OFFSETS = {
+    'i': 1,
+    'I': 1,
+    'ii': 2,
+    'II': 2,
+    'iii': 3,
+    'III': 3,
+    'iv': 4,
+    'IV': 4,
+    'v': 5,
+    'V': 5,
+    'vi': 6,
+    'VI': 6,
+    'vii': 7,
+    'VII': 7
+};
 
 // MIDI notes use numbers, which are inconvenient.
 
@@ -100,8 +117,8 @@ const CIRCLE = {
         'A' : ['F#', 'C#', 'G#'],
         'E' : ['F#', 'C#', 'G#', 'D#'],
         'B' : ['F#', 'C#', 'G#', 'D#', 'A#'],
-        'F#': ['F#', 'C#', 'G#', 'D#', 'A#', 'E#'],
-        'C#': ['F#', 'C#', 'G#', 'D#', 'A#', 'E#', 'B#']
+        'F#': ['F#', 'C#', 'G#', 'D#', 'A#', 'E#'], // = Gb
+        'C#': ['F#', 'C#', 'G#', 'D#', 'A#', 'E#', 'B#'] // = Db
     },
 
     flats: {
@@ -111,8 +128,8 @@ const CIRCLE = {
         'Eb': ['Bb', 'Eb', 'Ab'],
         'Ab': ['Bb', 'Eb', 'Ab', 'Db'],
         'Db': ['Bb', 'Eb', 'Ab', 'Db', 'Gb'],
-        'Gb': ['Bb', 'Eb', 'Ab', 'Db', 'Gb', 'Cb'],
-        'Cb': ['Bb', 'Eb', 'Ab', 'Db', 'Gb', 'Cb', 'Fb']
+        'Gb': ['Bb', 'Eb', 'Ab', 'Db', 'Gb', 'Cb'], // = F#
+        'Cb': ['Bb', 'Eb', 'Ab', 'Db', 'Gb', 'Cb', 'Fb'] // = B
     }
 };
 
@@ -143,7 +160,7 @@ function nameToNumber(name) {
   if (typeof name === 'function') return name;
   let note, octave;
   name.replace(/(\D+)(\d+)/, function(_, n, o) {
-    note = n;
+    note = n.toUpperCase();
     octave = o;
   });
   return NOTES[note] + OCTAVES[octave];
@@ -163,7 +180,7 @@ function invert(notes, shift) {
   return notes;
 }
 
-var musicTheory = {
+const base = {
   notes: NOTES,
   octaves: OCTAVES,
   nameToNumber,
@@ -172,13 +189,130 @@ var musicTheory = {
   mode: (note, mode) => MODES[mode].map(offset(nameToNumber(note))),
 
   tonics: TONICS,
+  getTonicOffset: v => TONIC_OFFSETS[v],
   tonic: (note, number) => TONICS.map(offset(nameToNumber(note)))[number],
 
   chords: CHORDS,
   invert,
   chord: (note, type, inversion=0) => invert(CHORDS[type].map(offset(nameToNumber(note))), inversion),
 
-  circle: CIRCLE,
+  circle: CIRCLE
 };
 
-export default musicTheory;
+class Element {
+  constructor(input) {
+    if (!input.forEach) {
+      input = [input];
+    }
+    this.cluster = input.map(v => (typeof v === "Number") ? v : nameToNumber(v)).filter(v => 0<=v && v<=127);
+    this.inversion = 0;
+  }
+  root() {
+    let len = this.cluster.length,
+        ridx = (this.inversion + len) % len;
+    return this.cluster[ridx];
+  }
+  chord(type, inversion) {
+    let root = this.root();
+    let notes = invert(CHORDS[type].map(offset(nameToNumber(note))), inversion);
+    let chord  =  new Element(notes);
+    chord.type = type;
+    if (inversion) {
+      chord.inversion = inversion;
+    }
+    return chord;
+  }
+  invert(step) {
+    const notes = this.cluster.slice();
+    step = step % notes.length;
+
+    if (step === 0) {
+      return new Element(notes);
+    }
+
+    if (i>0) {
+      while(i--) {
+        notes.push(notes.shift());
+      }
+    } else if (i<0) {
+      while(i++) {
+        notes.unshift(notes.pop());
+      }
+    }
+
+    let inversion = new Element(notes);
+    inversion.inversion = step;
+    return inversion;
+  }
+  shift(delta=0) {
+    return new Element(this.cluster.map(v => v + delta));
+  }
+  fifthUp() {
+    return this.shift(+7);
+  }
+  fifthDown() {
+    return this.shift(-7);
+  }
+  octaveUp() {
+    return this.shift(+12);
+  }
+  octaveDown() {
+    return this.shift(-12);
+  }
+  tonic(tone) {
+    let minor = (tone.toUpperCase() !== tone);
+    let delta = TONICS[TONIC_OFFSETS[tone]];
+    let e = new Element(this.cluster.map(v => v + delta));
+    if (minor) { e = e.minor(); }
+    return e;
+  }
+  major() {
+    let root = this.root();
+    let base = (root+3) % 12;
+    let notes = this.cluster.map(v => (v%12 === base)? v + 1 : v);
+    return new Element(notes);
+  }
+  minor() {
+    let root = this.root();
+    let base = (root+4) % 12;
+    let notes = this.cluster.map(v => (v%12 === base)? v - 1 : v);
+    return new Element(notes);
+  }
+  add(...notes) {
+    notes = notes.map(v => {
+      let root = this.root();
+
+      // flat/sharp/pure?
+      let prefix = 0;
+      if (typeof v === 'string') {
+        if (v.indexOf('#') === 0) { prefix = +1; }
+        if (v.indexOf('b') === 0) { prefix = -1; }
+        v = v.substring(1);
+      }
+
+      // map to key offset
+      v = parseFloat(v);
+      let octave = (v/8)|0;
+      let tone = v < 8 ? v : 1 + v%8;
+      return root + 12 * octave + TONICS[tone] + prefix;
+    });
+    let uniques = {};
+    this.cluster.concat(notes).forEach(v => (uniques[v]=1));
+    notes = Object.keys(uniques).map(v => parseFloat(v)).sort((a,b) => a-b);
+    return new Element(notes);
+  }
+}
+
+if (typeof window !== "undefined" && window.DEBUG) {
+  window.Element = Element;
+  Element.prototype._play = function(duration=500) {
+    let router = window.MIDIrouter;
+    let stop = () => {
+      this.cluster.forEach(v => router.signalnoteoff(0, v, 0));
+    };
+    this.cluster.forEach(v => router.signalnoteon(0, v, 64));
+    setTimeout(stop, duration);
+  };
+}
+
+export default base;

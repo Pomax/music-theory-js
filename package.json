@@ -7,7 +7,9 @@
     "rollup": "rollup -f es src/music-theory.js > music-theory.js",
     "copy": "shx cp music-theory.js public/js",
     "server": "http-server public",
-    "test": "run-s rollup copy server"
+    "build": "run-s rollup copy",
+    "watch": "node test/rebuild-on-changes.js",
+    "test": "run-p build server watch"
   },
   "author": "Pomax",
   "license": "all rights reserved",
@@ -16,5 +18,8 @@
     "npm-run-all": "^4.1.3",
     "rollup": "^0.65.0",
     "shx": "^0.3.2"
+  },
+  "dependencies": {
+    "chokidar": "^2.0.4"
   }
 }

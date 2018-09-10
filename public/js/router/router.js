@@ -112,4 +112,6 @@ class MIDIRouter {
 
 const router = new MIDIRouter();
 
+if (typeof window !== "undefined" && window.DEBUG) { window.MIDIrouter = router; }
+
 export { router };

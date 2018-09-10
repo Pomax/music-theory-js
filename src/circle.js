@@ -9,8 +9,8 @@ const CIRCLE = {
         'A' : ['F#', 'C#', 'G#'],
         'E' : ['F#', 'C#', 'G#', 'D#'],
         'B' : ['F#', 'C#', 'G#', 'D#', 'A#'],
-        'F#': ['F#', 'C#', 'G#', 'D#', 'A#', 'E#'],
-        'C#': ['F#', 'C#', 'G#', 'D#', 'A#', 'E#', 'B#']
+        'F#': ['F#', 'C#', 'G#', 'D#', 'A#', 'E#'], // = Gb
+        'C#': ['F#', 'C#', 'G#', 'D#', 'A#', 'E#', 'B#'] // = Db
     },
 
     flats: {
@@ -20,8 +20,8 @@ const CIRCLE = {
         'Eb': ['Bb', 'Eb', 'Ab'],
         'Ab': ['Bb', 'Eb', 'Ab', 'Db'],
         'Db': ['Bb', 'Eb', 'Ab', 'Db', 'Gb'],
-        'Gb': ['Bb', 'Eb', 'Ab', 'Db', 'Gb', 'Cb'],
-        'Cb': ['Bb', 'Eb', 'Ab', 'Db', 'Gb', 'Cb', 'Fb']
+        'Gb': ['Bb', 'Eb', 'Ab', 'Db', 'Gb', 'Cb'], // = F#
+        'Cb': ['Bb', 'Eb', 'Ab', 'Db', 'Gb', 'Cb', 'Fb'] // = B
     }
 };
 
@@ -44,5 +44,7 @@ CIRCLE.flats['f']  = CIRCLE.flats['Ab'];
 CIRCLE.flats['bb'] = CIRCLE.flats['Db'];
 CIRCLE.flats['eb'] = CIRCLE.flats['Gb'];
 CIRCLE.flats['ab'] = CIRCLE.flats['Cb'];
+
+
 
 export { CIRCLE };

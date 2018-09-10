@@ -39,7 +39,7 @@ class Synth {
       {
         list: this.controllers,
         onSetValue: (bar, value) => {
-          //this.masterVolume.node.value = value;
+          this.masterVolume.node.gain.value = value;
         }
       },
       this.masterVolume,
