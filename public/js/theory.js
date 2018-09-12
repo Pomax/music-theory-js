@@ -187,7 +187,7 @@ function invertCluster(notes, shift) {
   return notes;
 }
 
-const base = {
+const Theory = {
   notes: NOTES,
   octaves: OCTAVES,
   nameToNumber,
@@ -245,17 +245,23 @@ class Element {
   shift(delta=0) {
     return new Element(this.cluster.map(v => v + delta));
   }
+  changeFifth(delta) {
+    return this.shift(7 * delta);
+  }
   fifthUp() {
-    return this.shift(+7);
+    return this.changeFifth(+1);
   }
   fifthDown() {
-    return this.shift(-7);
+    return this.changeFifth(-1);
+  }
+  changeOctave(delta) {
+    return this.shift(12 * delta);
   }
   octaveUp() {
-    return this.shift(+12);
+    return this.changeOctave(+1);
   }
   octaveDown() {
-    return this.shift(-12);
+    return this.changeOctave(-1);
   }
   tonic(tone) {
     let minor = (tone.toUpperCase() !== tone);
@@ -313,7 +319,7 @@ if (typeof window !== "undefined" && window.DEBUG) {
     setTimeout(stop, duration);
   };
 
-  window.Theory = base;
+  window.Theory = Theory;
 }
 
-export default base;
+export { Theory, Element };
