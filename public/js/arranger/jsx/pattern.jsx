@@ -12,21 +12,17 @@ class Pattern extends Component {
     }
 
     render() {
-        return h(
-            "div",
-            { className: "cells" },
-            this.state.cells,
-            h(
-                "button",
-                { onClick: evt => this.newCell() },
-                "+"
-            )
+        return (
+            <div className="cells">
+                { this.state.cells }
+                <button onClick={evt => this.newCell()}>+</button>
+            </div>
         );
     }
 
     newCell() {
         let cells = this.state.cells;
-        let cell = h(Cell, { ref: e => cell.api = e, owner: this, onChange: evt => this.handleCellUpdate(), onDelete: evt => this.deleteCell(cell) });
+        let cell = <Cell ref={e => (cell.api = e)} owner={this} onChange={evt => this.handleCellUpdate()} onDelete={evt => this.deleteCell(cell)}/>;
         cells.push(cell);
         this.setState({ cells });
     }
@@ -35,7 +31,7 @@ class Pattern extends Component {
         let cells = this.state.cells;
         let pos = cells.indexOf(cell);
         if (pos > -1) {
-            cells.splice(pos, 1);
+            cells.splice(pos,1);
         }
         this.setState({ cells });
     }
@@ -66,3 +62,4 @@ class Pattern extends Component {
 }
 
 export { Pattern };
+

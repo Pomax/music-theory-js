@@ -10,36 +10,22 @@ class Arranger extends Component {
     }
 
     render() {
-        return h(
-            "div",
-            { className: "controls" },
-            h(Pattern, { ref: e => this.pattern = e, arranger: this }),
-            h(
-                "button",
-                { onClick: evt => this.stop() },
-                "\u25FC"
-            ),
-            h(
-                "button",
-                { onClick: evt => this.play() },
-                "\u25B6"
-            ),
-            h(
-                "label",
-                { className: "bpm" },
-                h("input", { type: "number", min: "1", max: "400", value: "120", onChange: evt => this.setBPM(evt.target.value) }),
-                "BPM"
-            ),
-            h(
-                "button",
-                { onClick: evt => this.demo() },
-                "demo"
-            )
+        return (
+            <div className="controls">
+                <Pattern ref={ e => (this.pattern = e) } arranger={this} />
+                <button onClick={evt => this.stop()}>◼</button>
+                <button onClick={evt => this.play()}>▶</button>
+                <label className="bpm">
+                  <input type="number" min="1" max="400" value="120" onChange={evt => this.setBPM(evt.target.value)}/>
+                  BPM
+                </label>
+                <button onClick={evt => this.demo()}>demo</button>
+            </div>
         );
     }
 
     setBPM(bpm) {
-        this.player.setBPM(bpm | 0);
+        this.player.setBPM(bpm|0);
     }
 
     demo() {
@@ -83,7 +69,8 @@ class Arranger extends Component {
 }
 
 function setupArranger(top) {
-    render(h(Arranger, null), top);
+    render(<Arranger/>, top);
 }
 
 export { setupArranger };
+

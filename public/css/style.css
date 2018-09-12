@@ -173,7 +173,7 @@ body {
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
-    width: 45%;
+    width: 100%;
     height: calc(100% / 17);
     background: rgb(255, 230, 192);
     font-family: monospace;

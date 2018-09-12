@@ -7,6 +7,7 @@ import { CIRCLE } from "./circle.js";
 const offset = note => (v => note + v);
 
 function nameToNumber(name) {
+  if (!name) return -1;
   if (name == name<<0) return name;
   if (typeof name === 'function') return name;
   let note, octave;
@@ -17,14 +18,14 @@ function nameToNumber(name) {
   return NOTES[note] + OCTAVES[octave];
 }
 
-function invert(notes, shift) {
+function invertCluster(notes, shift) {
   if (!shift) return notes;
 
   if (shift < 0)  while(shift++ < 0) {
     notes.unshift(notes.pop() - 12);
   }
 
-  if (shift > 0) while(shift-- > 0) {
+  else if (shift > 0) while(shift-- > 0) {
     notes.push(notes.shift() + 12);
   }
 
@@ -40,12 +41,12 @@ const base = {
   mode: (note, mode) => MODES[mode].map(offset(nameToNumber(note))),
 
   tonics: TONICS,
-  getTonicOffset: v => TONIC_OFFSETS[v],
+  getTonicOffset: v => TONICS[TONIC_OFFSETS[v]],
   tonic: (note, number) => TONICS.map(offset(nameToNumber(note)))[number],
 
   chords: CHORDS,
-  invert,
-  chord: (note, type, inversion=0) => invert(CHORDS[type].map(offset(nameToNumber(note))), inversion),
+  invert: invertCluster,
+  chord: (note, type, inversion=0) => invertCluster(CHORDS[type].map(offset(nameToNumber(note))), inversion),
 
   circle: CIRCLE
 };
@@ -65,7 +66,7 @@ class Element {
   }
   chord(type, inversion) {
     let root = this.root();
-    let notes = invert(CHORDS[type].map(offset(nameToNumber(note))), inversion)
+    let notes = invertCluster(CHORDS[type].map(offset(nameToNumber(root))), inversion)
     let chord  =  new Element(notes);
     chord.type = type;
     if (inversion) {
@@ -74,23 +75,14 @@ class Element {
     return chord;
   }
   invert(step) {
-    const notes = this.cluster.slice();
+    let notes = this.cluster.slice();
     step = step % notes.length;
 
     if (step === 0) {
       return new Element(notes);
     }
 
-    if (i>0) {
-      while(i--) {
-        notes.push(notes.shift());
-      }
-    } else if (i<0) {
-      while(i++) {
-        notes.unshift(notes.pop())
-      }
-    }
-
+    notes = invertCluster(notes, step);
     let inversion = new Element(notes);
     inversion.inversion = step;
     return inversion;
@@ -156,6 +148,7 @@ class Element {
 
 if (typeof window !== "undefined" && window.DEBUG) {
   window.Element = Element;
+
   Element.prototype._play = function(duration=500) {
     let router = window.MIDIrouter;
     let stop = () => {
@@ -164,6 +157,8 @@ if (typeof window !== "undefined" && window.DEBUG) {
     this.cluster.forEach(v => router.signalnoteon(0, v, 64));
     setTimeout(stop, duration);
   }
+
+  window.Theory = base;
 }
 
 export default base;

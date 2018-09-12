@@ -22,6 +22,10 @@ class ProgramPlayer {
     });
   }
 
+  setProgram(program) {
+    this.program = program;
+  }
+
   reset() {
     this.stepCounter = 0;
   }
@@ -54,25 +58,33 @@ class ProgramPlayer {
     // still be small amounts of drift if you're playing
     // this with a real metronome next to it.
     let correction = this.stopPreviousStep(tickCount);
-    let step = this.getNextStep();
-    if (step) {
-      step.end = tickCount + step.duration - correction;
-      this.currentStep = step;
-      this.playStep(step);
-    } else {
-      // if we tried all the steps and none of them
-      // have a playable duration, then just stop playing.
-      this.arranger.stop();
-    }
+    this.setNextStep();
+    let step = this.step;
+    step.end = tickCount + step.duration - correction;
+    this.playStep(step);
+  }
+
+  updateStepForTonic(step, prev) {
+    step.note = prev.note;
+    step.notes = prev.notes;
+    step.velocity = prev.velocity;
   }
 
   playStep(step) {
+    // are we tonic-varying?
+    if (step.note === -1 && step.tonic > 1) {
+      this.updateStepForTonic(step, this.prevStep);
+    }
+
     let notes = step.notes || [],
         velocity = step.velocity,
         arp = step.arp || 0,
         stops;
 
-    // dynamic not generator?
+    // Make sure we're not updating the notes in the actual step itself.
+    notes = notes.slice();
+
+    // dynamic note generator?
     if(typeof step.note === 'function') {
       notes = step.note(step) || [];
     }
@@ -85,6 +97,27 @@ class ProgramPlayer {
     // additional custom notes?
     if (step.additional) {
       notes = notes.concat(step.additional);
+    }
+
+    // alternate tonic?
+    if (step.tonic) {
+      notes = notes.map(n => n + step.tonic);
+      if (step.minor) {
+        // adjust any major-third-on-root to minor.
+        let root = notes[-step.inversion];
+        let majorTriad = root + 4;
+        for(let i=-8; i<9; i++) {
+          let chk = majorTriad + (i * 12);
+          if (chk < 0 || chk > 127) continue;
+          let pos = notes.indexOf(chk);
+          if (pos>-1) { notes[pos]--; }
+        }
+      }
+    }
+
+    // octave'd?
+    if (step.octave) {
+      notes = notes.map(n => n + step.octave);
     }
 
     // play all notes at the same time:
@@ -107,13 +140,9 @@ class ProgramPlayer {
     step.stop = () => stops.forEach(s => s());
   }
 
-  setProgram(program) {
-    this.program = program;
-  }
-
   cleanup() {
-    if (this.currentStep) {
-      this.currentStep.stop();
+    if (this.step) {
+      this.step.stop();
     }
     this.program.forEach(s => (s.end=0));
     this.reset();
@@ -124,17 +153,17 @@ class ProgramPlayer {
     return tickCount - this.step.end;
   }
 
-  getNextStep() {
+  peekPrevStep() {
     let len = this.program.length;
-    let iterCount = 0;
-    do {
-      this.step = this.program[this.stepCounter];
-      this.step.stepCount = this.stepCounter++;
-      this.arranger.markStep(this.step.stepCount);
-      if (this.stepCounter >= len) { this.stepCounter = 0; }
-      iterCount++;
-    } while (!this.step.duration && iterCount <= len);
-    return iterCount > len ? false : this.step;
+  }
+
+  setNextStep() {
+    this.prevStep = this.step;
+    this.step = this.program[this.stepCounter];
+    this.step.stepCount = this.stepCounter;
+    this.arranger.markStep(this.step.stepCount);
+    this.stepCounter++;
+    if (this.stepCounter >= this.program.length) { this.stepCounter = 0; }
   }
 };
 
@@ -157,6 +186,15 @@ function makeStep(options) {
 
   if (options.additional) {
     options.additional = options.additional.map(Theory.nameToNumber);
+  }
+
+  if (options.tonic) {
+    options.minor = (options.tonic.toUpperCase() !== options.tonic);
+    options.tonic = Theory.getTonicOffset(options.tonic);
+  }
+
+  if (options.octave) {
+    options.octave = 12 * options.octave;
   }
 
   if (!options.end) { options.end = 0; }
