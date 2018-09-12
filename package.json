@@ -6,7 +6,7 @@
   "scripts": {
     "babel:client": "babel --out-dir public/js/arranger public/js/arranger/jsx",
     "rollup": "rollup -f es src/music-theory.js > music-theory.js",
-    "copy": "shx cp music-theory.js public/js",
+    "copy": "shx cp music-theory.js public/js/theory.js",
     "server": "http-server public",
     "build": "run-s rollup copy",
     "watch": "node test/rebuild-on-changes.js",

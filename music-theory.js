@@ -170,12 +170,18 @@ function nameToNumber(name) {
 function invertCluster(notes, shift) {
   if (!shift) return notes;
 
-  if (shift < 0)  while(shift++ < 0) {
-    notes.unshift(notes.pop() - 12);
+  if (shift < 0) {
+    while(shift++ < 0) {
+      notes.unshift(notes.pop() - 12);
+    }
+    return notes;
   }
 
-  else if (shift > 0) while(shift-- > 0) {
-    notes.push(notes.shift() + 12);
+  if (shift > 0) {
+    while(shift-- > 0) {
+      notes.push(notes.shift() + 12);
+    }
+    return notes;
   }
 
   return notes;

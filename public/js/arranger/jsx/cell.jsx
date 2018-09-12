@@ -3,7 +3,7 @@ import { h, render, Component } from '../preact.js';
 import { CustomSelector } from "./custom-selector.js";
 import { ProgramPlayer } from "./program-player.js";
 import { INTERVALS } from "./intervals.js";
-import Theory from "../music-theory.js";
+import Theory from "../theory.js";
 import { router } from "../router/router.js";
 
 /**

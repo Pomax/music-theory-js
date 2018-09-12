@@ -1,4 +1,4 @@
-import Theory from "../music-theory.js";
+import Theory from "../theory.js";
 import { Ticker } from "./ticker.js";
 import { INTERVALS } from "./intervals.js";
 
@@ -68,6 +68,9 @@ class ProgramPlayer {
     step.note = prev.note;
     step.notes = prev.notes;
     step.velocity = prev.velocity;
+    // correct for octave and inversion
+    step.notes = step.notes.map(v => v + step.octave);
+    step.notes = Theory.invert(step.notes, step.inversion);
   }
 
   playStep(step) {
@@ -200,6 +203,8 @@ function makeStep(options) {
   if (!options.end) { options.end = 0; }
   if (!options.stop) { options.stop = () => {}; }
   if (typeof options.velocity === "undefined") { options.velocity = 64; }
+
+  console.log(options);
 
   return options;
 }
