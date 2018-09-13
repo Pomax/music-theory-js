@@ -13,8 +13,22 @@ body {
     flex-direction: column;
 }
 
+.screenshot {
+    opacity: 0.4;
+    margin-bottom: -1em;
+}
+
+.screenshot.hidden {
+    display: none;
+    margin-bottom: 0;
+}
+
 #components {
     display: flex;
+}
+
+#components.uninitialized {
+    display: none;
 }
 
 #synth {

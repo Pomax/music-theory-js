@@ -7,6 +7,8 @@ const device = document.getElementById('device');
 function loadSucceeded() {
     new Synth(document.getElementById('synth'), 1);
     setupArranger(document.getElementById('arranger'));
+    document.getElementById('components').classList.remove('uninitialized');
+    document.querySelector('.screenshot').classList.add('hidden');
     device.classList.add('live');
 }
 
