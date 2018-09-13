@@ -1,6 +1,7 @@
 import { h, render, Component } from '../preact.js';
 import { router } from "../router/router.js";
 import { Pattern } from "./pattern.js";
+import { TonicStep } from "./tonic-step.js";
 import { ProgramPlayer } from "./program-player.js";
 
 class Arranger extends Component {
@@ -12,7 +13,7 @@ class Arranger extends Component {
     render() {
         return (
             <div className="controls">
-                <Pattern ref={ e => (this.pattern = e) } arranger={this} />
+                <Pattern ref={ e => (this.pattern = e) } arranger={this} celltype={ TonicStep }/>
                 <button onClick={evt => this.stop()}>◼</button>
                 <button onClick={evt => this.play()}>▶</button>
                 <label className="bpm">
@@ -42,7 +43,6 @@ class Arranger extends Component {
         if (!program) {
             program = this.pattern.buildProgram();
         }
-        console.log('setting program');
         this.player.setProgram(program);
     }
 
@@ -51,6 +51,13 @@ class Arranger extends Component {
         this.player.stop();
     }
 
+    /**
+     *
+     * @param {*} note
+     * @param {*} velocity
+     * @param {*} delay
+     * @return parameter-less function that will stop this note from being played.
+     */
     playNote(note, velocity, delay) {
         let fn = () => router.signalnoteon(0, note, velocity);
 

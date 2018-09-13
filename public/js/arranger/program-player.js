@@ -64,6 +64,11 @@ class ProgramPlayer {
     this.playStep(step);
   }
 
+  /**
+   *
+   * @param {*} step
+   * @param {*} prev
+   */
   updateStepForTonic(step, prev) {
     let e = prev.from ? prev.from : prev.element;
     step.element = e.tonic(step.tonic);
@@ -89,6 +94,10 @@ class ProgramPlayer {
     step.velocity = prev.velocity;
   }
 
+  /**
+   *
+   * @param {*} step
+   */
   playStep(step) {
     // are we tonic-varying?
     if (step.note === false && step.tonic) {
@@ -131,10 +140,6 @@ class ProgramPlayer {
   stopPreviousStep(tickCount) {
     this.step.stop();
     return tickCount - this.step.end;
-  }
-
-  peekPrevStep() {
-    let len = this.program.length;
   }
 
   setNextStep() {

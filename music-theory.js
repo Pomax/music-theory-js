@@ -212,7 +212,9 @@ class Element {
       input = [input];
     }
     this.cluster = input.map(v => (typeof v === "Number") ? v : nameToNumber(v)).filter(v => 0<=v && v<=127);
-    this.inversion = 0;
+    // set some defaults to zero.
+    ['inversion', 'octave', 'attack', 'decay'].forEach(v => (this[v] = 0));
+    this.duration = 500;
   }
   root() {
     let len = this.cluster.length,
@@ -305,6 +307,9 @@ class Element {
     notes = Object.keys(uniques).map(v => parseFloat(v)).sort((a,b) => a-b);
     return new Element(notes);
   }
+  setAttack(attackMilliseconds) { this.attack = attackMilliseconds; }
+  setDecay(decayMilliseconds) { this.decay = decayMilliseconds; }
+  setDuration(durationMilliseconds) { this.duration = durationMilliseconds; }
 }
 
 if (typeof window !== "undefined" && window.DEBUG) {

@@ -2,7 +2,6 @@ var chokidar = require('chokidar');
 var runAll = require("npm-run-all");
 var log = console.log.bind(console);
 var rebuildScripts = ["build"];
-var clientRebuildScripts = ["babel:client"];
 
 
 /**
@@ -57,7 +56,13 @@ monitor(
   rebuildScripts
 );
 
+//
 monitor(
-  chokidar.watch(['public/js/**/*.jsx'], { ignored: [] }),
-  clientRebuildScripts
+  chokidar.watch(['public/js/arranger/jsx/*.jsx'], { ignored: [] }),
+  ['babel:arranger']
+)
+
+monitor(
+  chokidar.watch(['public/js/synth/jsx/*.jsx'], { ignored: [] }),
+  ['babel:synth']
 )

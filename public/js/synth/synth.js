@@ -1,7 +1,9 @@
+import { h, render } from '../preact.js';
+
 import { Keyboard } from "./keyboard.js";
 import { DrawBars } from "./drawbars.js";
 import { code } from "../router/midi-codes.js";
-import { LabelBar } from "./ui/label-bar.js";
+import { LabelBar } from "./jsx/label-bar.js";
 import { router } from "../router/router.js";
 
 const volumeCode = code('Volume (coarse)');
@@ -11,8 +13,7 @@ const volumeCode = code('Volume (coarse)');
  */
 class Synth {
 
-  constructor(top) {
-
+  constructor(top, startVolume) {
     router.addListener(this, "noteon");
     router.addListener(this, "noteoff");
     router.addListener(this, "control");
@@ -20,20 +21,26 @@ class Synth {
     // master audio context
     const context = this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-    this.masterVolume = {
-      node: context.createGain(),
-      value: 0.8,
+    // master volume control
+    let masterGain = context.createGain();
+    let master = this.masterVolume = {
+      node: masterGain,
+      value: startVolume || 0.5,
       label: "volume",
       setValue: v => {
         this.masterVolume.node.gain = v;
       }
     };
-    this.masterVolume.node.connect(context.destination);
+    masterGain.gain.value = master.value;
+    masterGain.connect(context.destination);
 
-    // At the top level we only have a single controller,
-    // so it might seem a bit silly to use a full controller
-    // list, but it keeps the rest of the code homogeneous.
+    // Right now we only have one {CC => control}
+    // binding, but we still need a controller
+    // for attack, delay, LFO frequency, and LFO
+    // strength.
     this.controllers = [];
+
+    // Add the master volume to the controller list.
     this.controllers[volumeCode] = this.masterVolume;
     this.masterVolume.ui = new LabelBar(
       {
@@ -46,13 +53,15 @@ class Synth {
       top
     );
 
-    //new GainKnob(top, this.audioCtx, "volume", 0.2);
-
-    // key source tracking
+    // active audio source tracking
     this.generators = {};
 
-    // draw bars
-    this.drawbars = new DrawBars(top, this.audioCtx, this.masterVolume.node);
+    // drawbars
+    render(h(DrawBars, {
+      ref: e => (this.drawbars = e),
+      context: this.audioCtx,
+      master: this.masterVolume.node
+    }), top);
 
     // keyboard visualisation
     this.keyboard = new Keyboard(top);
@@ -62,24 +71,25 @@ class Synth {
     this.playNote(note, velocity);
   }
 
+  playNote(note, velocity, delay=0) {
+    if (velocity === 0) return ()=>{};
+    let active = this.generators[note];
+    if (active) { active.stop(); }
+    active = this.generators[note] = this.drawbars.getSource(note, velocity);
+    active.start();
+  }
+
   onNoteOff(note, velocity) {
     this.stopNote(note, velocity);
   }
 
+  stopNote(note) {
+    let active = this.generators[note];
+    if (active) { active.stop(); }
+  }
+
   onControl(controller, value) {
     this.handleController(controller, value);
-  }
-
-  playNote(note, velocity, delay=0) {
-    if (velocity === 0) return ()=>{};
-    let source = this.generators[note] = this.drawbars.getSound(note, velocity);
-    source.start();
-  }
-
-  stopNote(note) {
-    if (this.generators[note]) {
-        this.generators[note].stop();
-    }
   }
 
   handleController(controller, value) {

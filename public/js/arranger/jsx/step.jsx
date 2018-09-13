@@ -9,15 +9,20 @@ import { router } from "../router/router.js";
 /**
  * ...
  */
-class Cell extends Component {
+class Step extends Component {
     constructor(owner, top) {
         super();
         this.owner = owner;
         this.content = false;
+        this.selectors = {
+            duration: INTERVALS,
+            chord: Theory.chords,
+            inversion: [-5,-4,-3,-2,-1,0,1,2,3,4,5],
+            octave: [-5,-4,-3,-2,-1,0,1,2,3,4,5]
+        };
         this.state = {
             note: false,
             velocity: 0,
-            tonic: 'I',
             duration: '4',
             inversion: 0,
             octave: 0,
@@ -31,14 +36,16 @@ class Cell extends Component {
         return (
             <div className={topClasses}>
                 <div className={noteClasses} onClick={ evt => this.assignNote(evt)}>{this.state.note}-{this.state.velocity}</div>
-                <CustomSelector owner={this} label="duration"  options={ INTERVALS } />
-                <CustomSelector owner={this} label="tonic"     options={ ['I','i','II','ii','III','iii','IV','iv','V','v','VI','vi','VII','vii'] } />
-                <CustomSelector owner={this} label="chord"     options={ Theory.chords } />
-                <CustomSelector owner={this} label="inversion" options={ [-5,-4,-3,-2,-1,0,1,2,3,4,5] } />
-                <CustomSelector owner={this} label="octave"    options={ [-5,-4,-3,-2,-1,0,1,2,3,4,5] } />
+                { this.renderSelectors() }
                 <button className="cell-clear" onClick={evt => this.delete()}>X</button>
             </div>
         );
+    }
+
+    renderSelectors() {
+        let s = this.selectors;
+        let labels = Object.keys(s);
+        return labels.map(label => <CustomSelector owner={this} label={label} key={label} options={s[label]} />);
     }
 
     assignNote(evt) {
@@ -62,12 +69,6 @@ class Cell extends Component {
         });
     }
 
-    setContent(note, velocity, duration, chord) {
-        this.setState({ note, velocity, duration, chord}, () => {
-            this.contentUpdated();
-        })
-    }
-
     delete(evt) {
         this.props.onDelete(this);
     }
@@ -81,4 +82,4 @@ class Cell extends Component {
     }
 }
 
-export { Cell };
+export { Step };

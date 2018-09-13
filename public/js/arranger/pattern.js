@@ -1,5 +1,4 @@
 import { h, render, Component } from '../preact.js';
-import { Cell } from "./cell.js";
 
 /**
  *
@@ -25,8 +24,9 @@ class Pattern extends Component {
     }
 
     newCell() {
+        let CellType = this.props.celltype;
         let cells = this.state.cells;
-        let cell = h(Cell, { ref: e => cell.api = e, owner: this, onChange: evt => this.handleCellUpdate(), onDelete: evt => this.deleteCell(cell) });
+        let cell = h(CellType, { ref: e => cell.api = e, owner: this, onChange: evt => this.handleCellUpdate(), onDelete: evt => this.deleteCell(cell) });
         cells.push(cell);
         this.setState({ cells });
     }

@@ -5,7 +5,7 @@ import { setupArranger } from "./arranger/arranger.js";
 const device = document.getElementById('device');
 
 function loadSucceeded() {
-    new Synth(document.getElementById('synth'));
+    new Synth(document.getElementById('synth'), 1);
     setupArranger(document.getElementById('arranger'));
     device.classList.add('live');
 }
