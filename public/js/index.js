@@ -4,20 +4,20 @@ import { setupArranger } from "./arranger/arranger.js";
 
 const device = document.getElementById('device');
 
-function loadSucceeded() {
+function loadSucceeded(noMIDIwarning) {
     new Synth(document.getElementById('synth'), 1);
     setupArranger(document.getElementById('arranger'));
     document.getElementById('components').classList.remove('uninitialized');
     document.querySelector('.screenshot').classList.add('hidden');
-    device.classList.add('live');
+    if (!noMIDIwarning) {
+        device.classList.add('live');
+    } else {
+        alert(noMIDIwarning);
+    }
 }
 
 function loadFailed(msg) {
-    if (!device.classList.contains('led')) {
-        device.textContent = msg;
-    } else {
-        alert(msg);
-    }
+    alert(msg);
     throw new Error(msg);
 }
 
@@ -48,12 +48,12 @@ function onMidiSuccess(success) {
     if (deviceCount > 0) {
         loadSucceeded();
     } else {
-        loadFailed("No available MIDI devices were found (are they already in use in another program?)");
+        loadSucceeded("No available MIDI devices were found (are they already in use in another program?)");
     }
 }
 
 function onMidiFail() {
-    loadFailed("Web MIDI is available, but MIDI device access failed...");
+    loadSucceeded("Web MIDI is available, but MIDI device access failed.");
 }
 
 // kick it all of.
