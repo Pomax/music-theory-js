@@ -46,7 +46,6 @@ function onMidiSuccess(success) {
         deviceCount++;
     }
     if (deviceCount > 0) {
-        loadSynth(true);
         loadSucceeded();
     } else {
         loadSynth(false);
