@@ -1,4 +1,5 @@
 import { h, render, Component } from '../preact.js';
+
 import { Slider } from "./slider.js";
 
 /**

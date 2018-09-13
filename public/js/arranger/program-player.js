@@ -1,6 +1,6 @@
 import { Theory } from "../theory.js";
 import { Ticker } from "./ticker.js";
-import { INTERVALS } from "./intervals.js";
+import { INTERVALS } from "../intervals.js";
 
 /**
  *

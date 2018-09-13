@@ -1,10 +1,12 @@
 import { h, render } from '../preact.js';
 
+import { AudioSource } from "./audio-source.js";
 import { Keyboard } from "./keyboard.js";
 import { DrawBars } from "./drawbars.js";
 import { code } from "../router/midi-codes.js";
 import { LabelBar } from "./jsx/label-bar.js";
 import { router } from "../router/router.js";
+import { setupAnalyser } from "./show-fft.js";
 
 const volumeCode = code('Volume (coarse)');
 
@@ -19,7 +21,7 @@ class Synth {
     router.addListener(this, "control");
 
     // master audio context
-    const context = this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const context = this.context = new (window.AudioContext || window.webkitAudioContext)();
 
     // master volume control
     let masterGain = context.createGain();
@@ -32,7 +34,11 @@ class Synth {
       }
     };
     masterGain.gain.value = master.value;
+
+    // Hook up the master volume to the speakers,
+    // and set up a visualiser, because they're cool.
     masterGain.connect(context.destination);
+    setupAnalyser(context, masterGain);
 
     // Right now we only have one {CC => control}
     // binding, but we still need a controller
@@ -59,7 +65,7 @@ class Synth {
     // drawbars
     render(h(DrawBars, {
       ref: e => (this.drawbars = e),
-      context: this.audioCtx,
+      context: this.context,
       master: this.masterVolume.node
     }), top);
 
