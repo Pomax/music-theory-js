@@ -14,8 +14,8 @@ class Arranger extends Component {
         return (
             <div className="controls">
                 <Pattern ref={ e => (this.pattern = e) } arranger={this} steptype={ TonicStep }/>
-                <button onClick={evt => this.stop()}>◼</button>
-                <button onClick={evt => this.play()}>▶</button>
+                <button onClick={evt => this.stop()}><span class="stop"></span></button>
+                <button onClick={evt => this.play()}><span class="play"></span></button>
                 <label className="bpm">
                   <input type="number" min="1" max="400" value="120" onChange={evt => this.setBPM(evt.target.value)}/>
                   BPM

@@ -4,7 +4,7 @@
   "description": "For when you want to do music things, using music theory, rather than just pressing some keys on a piano.",
   "main": "music-theory.js",
   "author": "Pomax",
-  "license": "all rights reserved",
+  "license": "MIT",
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-plugin-transform-react-jsx": "^6.24.1",

@@ -8,7 +8,7 @@ function setupAnalyser(context, source) {
     let bufferLength = analyser.frequencyBinCount;
 
     let canvas = document.getElementById("oscilloscope");
-    let d = 1024;
+    let d = 512;
     canvas.width = d;
     canvas.height = d;
 
@@ -35,7 +35,7 @@ function setupAnalyser(context, source) {
         // "why not request animation frame?" because I don't
         // want this to run as fast as possible. Running it as
         // fast as possible ends up clogging CG like mad.
-        if (keepDrawing) setTimeout(draw, 100);
+        if (keepDrawing) setTimeout(draw, 50);
     }
 
     let controller = {

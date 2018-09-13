@@ -18,12 +18,12 @@ class Arranger extends Component {
             h(
                 "button",
                 { onClick: evt => this.stop() },
-                "\u25FC"
+                h("span", { "class": "stop" })
             ),
             h(
                 "button",
                 { onClick: evt => this.play() },
-                "\u25B6"
+                h("span", { "class": "play" })
             ),
             h(
                 "label",

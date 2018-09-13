@@ -35,26 +35,67 @@
 
         <div class="notice">
             <p>
-                Hook up a MIDI controller and see if the "led" turns green. If it does:
+                Hook up a MIDI controller and reload the page. If you get no alerts:
                 you're good to go, go start playing and slide some sliders and tweak some
-                knobs on your controller, see what happens! Don't see anything happen? Click
-                on a slider's label to "CC learn" a different controller, just like you would
-                in any regular old VST instrument, and see what happens, v2!
+                knobs on your controller, see what happens! Don't see anything happen when
+                you slide those faders or twist those pots? Click on a slider's label to
+                teach it to listen to your controller instead of the default, similar to
+                using "CC learn" in any regular old VST instrument. Then see what happens v2!
             </p>
             <p>
-                Note that this works out of the box in Chrome, but not in Firefox, mostly
-                because Firefox  is still in the process of figuring out their implementation
-                approach for Web MIDI. It's been six years, but no one's paid them to implement
-                it, so... you get what you pay for? Thankfully, <a href="https://addons.mozilla.org/en-US/firefox/addon/web-midi-api/">the
-                web midi extension for Firefox</a> lets you add Web MIDI support pretty easily,
-                although it does need 2 more things installed. I thought that was worth it.
-                Maybe you don't. Use Chrome if you think addons are too much work.
+                Just want to see it play something? Hit the "demo" button and press play.
+                Then start messing around with that, because why wouldn't you?
+            </p>
+            <h3>How does this work?</h3>
+            <p>
+                This "demo" relies on the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API">Web Audio</a>
+                and <a href="https://webaudio.github.io/web-midi-api/">Web MIDI</a>
+                APIs. The first just lets your browser make sounds. So you can make it
+                generate random noise, or synth your way to a well crafted kick drum, fat snare,
+                or even a ridiculously accurate grand piano sample. In this case, we're modelling
+                a drawbar organ syntehsizer: each note triggers 8 sine oscillators, and each
+                oscillator's gain (loosely, it's volume) is tied to a slider. Slider the slider
+                up, reduce its gain (because that's how real drawbar organs work), slide it all
+                the way down, and get its full effect.
             </p>
             <p>
-                Think this is cool? <a href="https://twitter.com/TheRealPomax">Shoot me an opinion!</a>.
-                For the code, have a look <a href="https://github.com/Pomax/music-theory-js/">here</a>,
-                but for the moment it's on an "all rights reserved while I get this codebase to something
-                resembling a v0.1-pre-alpha" license.
+                That sounds simple, and it is! There is nothing conceptually hard about a drawbar
+                synth, but implementing one is still tricky (and fun) so I made one so you don't
+                have to, and then hooked it up to the Web MIDI API so that if you have a browser
+                that supports it, you can literally just hook up your MIDI controller, program
+                that to "play stuff", and have it drive this synth. Because again, that's fun!
+            </p>
+            <h3>Is... Web MIDI even supported by anything?</h3>
+            <p>
+                As little as you'll have heard about it: yes, actually.
+                Web MIDI works out of the box in Chrome, and while Firefox
+                currently requires <a href="https://addons.mozilla.org/en-US/firefox/addon/web-midi-api/">an extension</a>
+                to work, work is underway to (finally) add Web MIDI support. In the mean time,
+                said extension works just fine.
+            </p>
+            <p>
+                It's not implemented in Edge, but... I don't know, do we take Edge seriously when it
+                comes to this kind of stuff? I mean, it's a decent browser, some people I respect
+                work on it these days, but it's doesn't strike me as a browser whose team is
+                allowed to put "the cool stuff(tm)" in until all the boring issues have been
+                closed. That said, if you know of a plugin/addon that makes Web MIDI work in
+                Edge, let me know, and I'll add it here!. As for any of the other browsers:
+                no idea! Thankfully, <a href="https://www.caniuse.com/#search=midi">caniuse.com does</a>!
+            </p>
+            <h3>This is (awesome|pretty neat|silly|the worst thing I ever saw)! I have opinions!</h3>
+            <p>
+                I am down with opinions, shoot me yours on <a href="https://twitter.com/TheRealPomax">Twitter</a>
+                or <a href="https://mastodon.cloud/@TheRealPomax">Mastodon</a>, but if you have a deeper issue that requires we engage in an
+                actual conversation (say, you find a bug, or have an idea for a feature that'll work
+                well as part of this project, or you have questions about the code or concepts) I would
+                strongly recommend hitting up the <a href="https://github.com/Pomax/music-theory-js/">github repo</a>,
+                and filing an issue so we can have a solid back-and-forth.
+            </p>
+            <h3>So... what's the license?</h3>
+            <p>
+                MIT. Most of my small stuff is released as "public domain except in jurisdictions that
+                don't recognize PD, in which case it's MIT" but this was fun to make and I like it enough
+                to keep my name associated with it.
             </p>
             <p>
                 - Pomax
