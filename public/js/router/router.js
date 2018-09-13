@@ -16,9 +16,7 @@ class MIDIRouter {
             // Set up `signal...()` functions that anyone can call to trigger
             // a MIDI message call chain, including the router itself for
             // sending on parsed messages to listeners.
-            this[`signal${e}`] = (channel, ...data) => {
-                this[`${e}Listeners`].receive(channel, ...data);
-            };
+            this[`signal${e}`] = (channel, ...data) => this[`${e}Listeners`].receive(channel, ...data);
         });
     }
 

@@ -4,7 +4,9 @@ import { AudioGenerator } from "./audio-generator.js";
 import { DrawBar } from "./drawbar.js";
 import { router } from "../router/router.js";
 
-const offsets = [[-12, 0, 7, 12, 19, 26, 31, 38]];
+const offsets = [
+    [-12, 0, 7, 12, 19, 26, 31, 38]
+];
 
 /**
  *
@@ -21,11 +23,7 @@ class DrawBars extends Component {
     }
 
     render() {
-        return h(
-            "div",
-            { className: "drawbars" },
-            this.DRAW_BARS
-        );
+        return <div className="drawbars">{ this.DRAW_BARS }</div>;
     }
 
     onControl(controller, value) {
@@ -36,7 +34,16 @@ class DrawBars extends Component {
     setupDrawBars() {
         let tones = offsets[0];
 
-        let definitions = [{ label: "sub-octave", value: 0.4 }, { label: "primary", value: 1.0 }, { label: "quint", value: 0.6 }, { label: "octave", value: 0.4 }, { label: "harmony 1", value: 0.2 }, { label: "harmony 2", value: 0.1 }, { label: "harmony 3", value: 0.0 }, { label: "harmony 4", value: 0.0 }];
+        let definitions = [
+            { label: "sub-octave", value: 0.4},
+            { label: "primary",    value: 1.0},
+            { label: "quint",      value: 0.6},
+            { label: "octave",     value: 0.4},
+            { label: "harmony 1",  value: 0.2},
+            { label: "harmony 2",  value: 0.1},
+            { label: "harmony 3",  value: 0.0},
+            { label: "harmony 4",  value: 0.0},
+        ];
 
         let normalizer = this.props.context.createGain();
         normalizer.gain.value = 1 / definitions.length;
@@ -46,17 +53,17 @@ class DrawBars extends Component {
 
         // We conveniently start with CC 16-19 ("general purpose" 1-4) followed by CC 20-23 (undefined).
         definitions.forEach((def, i) => {
-            let drawbar = h(DrawBar, {
-                ref: e => drawbar.api = e,
-                label: def.label,
-                value: def.value,
-                offset: tones[i],
-                context: this.props.context,
-                out: normalizer,
-                generator: this.generator,
-                cc: 16 + i
-            });
-            DRAW_BARS.push(drawbar);
+            let drawbar = <DrawBar
+                ref={e => (drawbar.api = e)}
+                label={def.label}
+                value={def.value}
+                offset={tones[i]}
+                context={this.props.context}
+                out={normalizer}
+                generator={this.generator}
+                cc={16 + i}
+              />
+              DRAW_BARS.push(drawbar);
         });
     }
 
@@ -70,4 +77,4 @@ class DrawBars extends Component {
     }
 }
 
-export { DrawBars };
+export { DrawBars }

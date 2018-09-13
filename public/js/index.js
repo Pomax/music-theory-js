@@ -1,12 +1,12 @@
 import { router } from "./router/router.js";
 import { Synth } from "./synth/synth.js";
-import { Arranger } from "./arranger/arranger.js";
+import { setupArranger } from "./arranger/arranger.js";
 
 const device = document.getElementById('device');
 
 function loadSucceeded() {
-    new Synth(document.getElementById('synth'));
-    new Arranger(document.getElementById('arranger'));
+    new Synth(document.getElementById('synth'), 1);
+    setupArranger(document.getElementById('arranger'));
     device.classList.add('live');
 }
 
@@ -45,6 +45,8 @@ function onMidiSuccess(success) {
     }
     if (deviceCount > 0) {
         loadSucceeded();
+    } else {
+        loadFailed("No available MIDI devices were found (are they already in use in another program?)");
     }
 }
 

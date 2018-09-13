@@ -156,6 +156,7 @@ CIRCLE.flats['ab'] = CIRCLE.flats['Cb'];
 const offset = note => (v => note + v);
 
 function nameToNumber(name) {
+  if (!name) return -1;
   if (name == name<<0) return name;
   if (typeof name === 'function') return name;
   let note, octave;
@@ -166,21 +167,27 @@ function nameToNumber(name) {
   return NOTES[note] + OCTAVES[octave];
 }
 
-function invert(notes, shift) {
+function invertCluster(notes, shift) {
   if (!shift) return notes;
 
-  if (shift < 0)  while(shift++ < 0) {
-    notes.unshift(notes.pop() - 12);
+  if (shift < 0) {
+    while(shift++ < 0) {
+      notes.unshift(notes.pop() - 12);
+    }
+    return notes;
   }
 
-  if (shift > 0) while(shift-- > 0) {
-    notes.push(notes.shift() + 12);
+  if (shift > 0) {
+    while(shift-- > 0) {
+      notes.push(notes.shift() + 12);
+    }
+    return notes;
   }
 
   return notes;
 }
 
-const base = {
+const Theory = {
   notes: NOTES,
   octaves: OCTAVES,
   nameToNumber,
@@ -189,12 +196,12 @@ const base = {
   mode: (note, mode) => MODES[mode].map(offset(nameToNumber(note))),
 
   tonics: TONICS,
-  getTonicOffset: v => TONIC_OFFSETS[v],
+  getTonicOffset: v => TONICS[TONIC_OFFSETS[v]],
   tonic: (note, number) => TONICS.map(offset(nameToNumber(note)))[number],
 
   chords: CHORDS,
-  invert,
-  chord: (note, type, inversion=0) => invert(CHORDS[type].map(offset(nameToNumber(note))), inversion),
+  invert: invertCluster,
+  chord: (note, type, inversion=0) => invertCluster(CHORDS[type].map(offset(nameToNumber(note))), inversion),
 
   circle: CIRCLE
 };
@@ -205,7 +212,9 @@ class Element {
       input = [input];
     }
     this.cluster = input.map(v => (typeof v === "Number") ? v : nameToNumber(v)).filter(v => 0<=v && v<=127);
-    this.inversion = 0;
+    // set some defaults to zero.
+    ['inversion', 'octave', 'attack', 'decay'].forEach(v => (this[v] = 0));
+    this.duration = 500;
   }
   root() {
     let len = this.cluster.length,
@@ -214,7 +223,7 @@ class Element {
   }
   chord(type, inversion) {
     let root = this.root();
-    let notes = invert(CHORDS[type].map(offset(nameToNumber(note))), inversion);
+    let notes = invertCluster(CHORDS[type].map(offset(nameToNumber(root))), inversion);
     let chord  =  new Element(notes);
     chord.type = type;
     if (inversion) {
@@ -223,23 +232,14 @@ class Element {
     return chord;
   }
   invert(step) {
-    const notes = this.cluster.slice();
+    let notes = this.cluster.slice();
     step = step % notes.length;
 
     if (step === 0) {
       return new Element(notes);
     }
 
-    if (i>0) {
-      while(i--) {
-        notes.push(notes.shift());
-      }
-    } else if (i<0) {
-      while(i++) {
-        notes.unshift(notes.pop());
-      }
-    }
-
+    notes = invertCluster(notes, step);
     let inversion = new Element(notes);
     inversion.inversion = step;
     return inversion;
@@ -247,17 +247,23 @@ class Element {
   shift(delta=0) {
     return new Element(this.cluster.map(v => v + delta));
   }
+  changeFifth(delta) {
+    return this.shift(7 * delta);
+  }
   fifthUp() {
-    return this.shift(+7);
+    return this.changeFifth(+1);
   }
   fifthDown() {
-    return this.shift(-7);
+    return this.changeFifth(-1);
+  }
+  changeOctave(delta) {
+    return this.shift(12 * delta);
   }
   octaveUp() {
-    return this.shift(+12);
+    return this.changeOctave(+1);
   }
   octaveDown() {
-    return this.shift(-12);
+    return this.changeOctave(-1);
   }
   tonic(tone) {
     let minor = (tone.toUpperCase() !== tone);
@@ -301,10 +307,14 @@ class Element {
     notes = Object.keys(uniques).map(v => parseFloat(v)).sort((a,b) => a-b);
     return new Element(notes);
   }
+  setAttack(attackMilliseconds) { this.attack = attackMilliseconds; }
+  setDecay(decayMilliseconds) { this.decay = decayMilliseconds; }
+  setDuration(durationMilliseconds) { this.duration = durationMilliseconds; }
 }
 
 if (typeof window !== "undefined" && window.DEBUG) {
   window.Element = Element;
+
   Element.prototype._play = function(duration=500) {
     let router = window.MIDIrouter;
     let stop = () => {
@@ -313,6 +323,8 @@ if (typeof window !== "undefined" && window.DEBUG) {
     this.cluster.forEach(v => router.signalnoteon(0, v, 64));
     setTimeout(stop, duration);
   };
+
+  window.Theory = Theory;
 }
 
-export default base;
+export { Theory, Element };

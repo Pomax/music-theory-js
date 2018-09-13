@@ -52,11 +52,17 @@ function monitor(watcher, scripts) {
  * Watch for code changes
  */
 monitor(
-  chokidar.watch([
-    'src/**/*.js',
-  ], {
-    ignored: [
-    ]
-  }),
+  chokidar.watch([ 'src/**/*.js' ], { ignored: [] }),
   rebuildScripts
 );
+
+//
+monitor(
+  chokidar.watch(['public/js/arranger/jsx/*.jsx'], { ignored: [] }),
+  ['babel:arranger']
+)
+
+monitor(
+  chokidar.watch(['public/js/synth/jsx/*.jsx'], { ignored: [] }),
+  ['babel:synth']
+)

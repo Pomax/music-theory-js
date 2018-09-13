@@ -1,5 +1,3 @@
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 import { h, render, Component } from '../preact.js';
 import { Theory } from '../theory.js';
 
@@ -14,15 +12,11 @@ class Pattern extends Component {
     }
 
     render() {
-        return h(
-            'div',
-            { className: 'cells' },
-            this.state.cells,
-            h(
-                'button',
-                { onClick: evt => this.newCell() },
-                '+'
-            )
+        return (
+            <div className="cells">
+                { this.state.cells }
+                <button onClick={evt => this.newCell()}>+</button>
+            </div>
         );
     }
 
@@ -35,12 +29,13 @@ class Pattern extends Component {
 
     buildCellComponent(options) {
         let StepType = this.props.steptype;
-        let cell = h(StepType, _extends({
-            ref: e => cell.api = e,
-            owner: this,
-            onChange: evt => this.handleCellUpdate(),
-            onDelete: evt => this.deleteCell(cell)
-        }, options));
+        let cell = <StepType
+            ref={e => (cell.api=e)}
+            owner={this}
+            onChange={evt => this.handleCellUpdate()}
+            onDelete={evt => this.deleteCell(cell)}
+            {...options}
+        />;
         return cell;
     }
 
@@ -48,7 +43,7 @@ class Pattern extends Component {
         let cells = this.state.cells;
         let pos = cells.indexOf(cell);
         if (pos > -1) {
-            cells.splice(pos, 1);
+            cells.splice(pos,1);
         }
         this.setState({ cells });
     }
@@ -60,7 +55,13 @@ class Pattern extends Component {
     loadDemo() {
         let _c = o => this.buildCellComponent(o);
         let note = Theory.nameToNumber('C4');
-        let cells = [_c({ note, velocity: 50, chord: 'major', tonic: 'I', inversion: -1, octave: 0, duration: '1' }), _c({ note: false, velocity: 0, chord: '', tonic: 'VI', inversion: 0, octave: -1, duration: '1' }), _c({ note: false, velocity: 0, chord: '', tonic: 'i', inversion: -1, octave: 0, duration: '1' }), _c({ note: false, velocity: 0, chord: '', tonic: 'ii', inversion: -1, octave: 0, duration: '2' }), _c({ note: false, velocity: 0, chord: '', tonic: 'II', inversion: 0, octave: 0, duration: '2' })];
+        let cells = [
+            _c({ note, velocity:50, chord:'major', tonic: 'I',  inversion: -1, octave:  0, duration: '1' }),
+            _c({ note: false, velocity: 0, chord: '', tonic: 'VI', inversion:  0, octave: -1, duration: '1' }),
+            _c({ note: false, velocity: 0, chord: '', tonic: 'i',  inversion: -1, octave:  0, duration: '1' }),
+            _c({ note: false, velocity: 0, chord: '', tonic: 'ii', inversion: -1, octave:  0, duration: '2' }),
+            _c({ note: false, velocity: 0, chord: '', tonic: 'II', inversion:  0, octave:  0, duration: '2' })
+        ];
         this.setState({ cells });
     }
 
@@ -82,3 +83,4 @@ class Pattern extends Component {
 }
 
 export { Pattern };
+

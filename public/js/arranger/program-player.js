@@ -1,6 +1,6 @@
-import Theory from "../music-theory.js";
+import { Theory } from "../theory.js";
 import { Ticker } from "./ticker.js";
-import { INTERVALS } from "./intervals.js";
+import { INTERVALS } from "../intervals.js";
 
 /**
  *
@@ -20,6 +20,10 @@ class ProgramPlayer {
     this.program.forEach(step => {
       step.end += tickDifference;
     });
+  }
+
+  setProgram(program) {
+    this.program = program;
   }
 
   reset() {
@@ -54,48 +58,66 @@ class ProgramPlayer {
     // still be small amounts of drift if you're playing
     // this with a real metronome next to it.
     let correction = this.stopPreviousStep(tickCount);
-    let step = this.getNextStep();
-    if (step) {
-      step.end = tickCount + step.duration - correction;
-      this.currentStep = step;
-      this.playStep(step);
-    } else {
-      // if we tried all the steps and none of them
-      // have a playable duration, then just stop playing.
-      this.arranger.stop();
-    }
+    this.setNextStep();
+    let step = this.step;
+    step.end = tickCount + step.duration - correction;
+    this.playStep(step);
   }
 
+  /**
+   *
+   * @param {*} step
+   * @param {*} prev
+   */
+  updateStepForTonic(step, prev) {
+    let e = prev.from ? prev.from : prev.element;
+    step.element = e.tonic(step.tonic);
+    step.from = e;
+
+    if (step.chord) {
+      step.element = step.element.chord(step.chord);
+    }
+
+    if (step.minor) {
+      step.element = step.element.minor();
+    } else {
+      step.element = step.element.major();
+    }
+
+    if (step.inversion) {
+      step.element = step.element.invert(step.inversion);
+    }
+    if (step.octave) {
+      step.element = step.element.changeOctave(step.octave);
+    }
+
+    step.velocity = prev.velocity;
+  }
+
+  /**
+   *
+   * @param {*} step
+   */
   playStep(step) {
-    let notes = step.notes || [],
+    // are we tonic-varying?
+    if (step.note === false && step.tonic) {
+      this.updateStepForTonic(step, this.prevStep);
+    }
+
+    let element = step.element,
         velocity = step.velocity,
         arp = step.arp || 0,
-        stops;
-
-    // dynamic not generator?
-    if(typeof step.note === 'function') {
-      notes = step.note(step) || [];
-    }
-
-    // string -> array of notes
-    if (!notes.forEach) {
-      notes = [notes];
-    }
-
-    // additional custom notes?
-    if (step.additional) {
-      notes = notes.concat(step.additional);
-    }
+        stops = [];
 
     // play all notes at the same time:
     if (!arp) {
-      stops = notes.map(note => this.arranger.playNote(note, velocity));
+      stops = element.cluster.map(note => this.arranger.playNote(note, velocity));
     }
 
     // play notes staggered:
     else {
       let delay = 0;
-      stops = notes.map(note => {
+      stops = element.cluster.map(note => {
         let stop = this.arranger.playNote(note, velocity, delay);
         delay += arp;
         return stop;
@@ -107,13 +129,9 @@ class ProgramPlayer {
     step.stop = () => stops.forEach(s => s());
   }
 
-  setProgram(program) {
-    this.program = program;
-  }
-
   cleanup() {
-    if (this.currentStep) {
-      this.currentStep.stop();
+    if (this.step) {
+      this.step.stop();
     }
     this.program.forEach(s => (s.end=0));
     this.reset();
@@ -124,44 +142,50 @@ class ProgramPlayer {
     return tickCount - this.step.end;
   }
 
-  getNextStep() {
-    let len = this.program.length;
-    let iterCount = 0;
-    do {
-      this.step = this.program[this.stepCounter];
-      this.step.stepCount = this.stepCounter++;
-      this.arranger.markStep(this.step.stepCount);
-      if (this.stepCounter >= len) { this.stepCounter = 0; }
-      iterCount++;
-    } while (!this.step.duration && iterCount <= len);
-    return iterCount > len ? false : this.step;
+  setNextStep() {
+    this.prevStep = this.step;
+    this.step = this.program[this.stepCounter];
+    this.step.stepCount = this.stepCounter;
+    this.arranger.markStep(this.step.stepCount);
+    this.stepCounter++;
+    if (this.stepCounter >= this.program.length) { this.stepCounter = 0; }
   }
 };
 
 function makeStep(options) {
-  options.originalNote = options.note;
-
-  // rewrite whole, half, quarter, etc to tick count
-  options.duration = INTERVALS[options.duration];
-
-  let note = options.note = Theory.nameToNumber(options.note);
-
-  if (note && !options.notes) {
-    options.notes = [note];
-  }
+  let e = new Element(options.note);
 
   if (options.chord) {
-    let root = options.root = options.note;
-    options.notes = Theory.chord(root, options.chord, options.inversion);
+    e = e.chord(options.chord);
   }
 
   if (options.additional) {
-    options.additional = options.additional.map(Theory.nameToNumber);
+    e = e.add(...options.additional);
   }
 
-  if (!options.end) { options.end = 0; }
-  if (!options.stop) { options.stop = () => {}; }
-  if (typeof options.velocity === "undefined") { options.velocity = 64; }
+  if (options.inversion) {
+    e = e.invert(options.inversion);
+  }
+
+  if (options.octave) {
+    e = e.changeOctave(options.octave);
+  }
+
+  if (options.tonic) {
+    e = e.tonic(options.tonic);
+    if (options.tonic.toUpperCase() !== options.tonic) {
+      e = e.minor();
+      options.minor = true;
+    }
+  }
+
+  // rewrite whole, half, quarter, etc to tick count
+  options.duration = INTERVALS[options.duration];
+  options.end = options.end || 0;
+  options.stop = options.stop || (() => {});
+  options.velocity = (typeof options.velocity === "undefined") ? 64 : options.velocity;
+
+  options.element = e;
 
   return options;
 }
@@ -169,7 +193,9 @@ function makeStep(options) {
 ProgramPlayer.makeStep = makeStep;
 
 function makeRest(duration=0) {
-  return { note: false, duration };
+  let e = new Element(false);
+  e.duration = duration;
+  return e;
 }
 
 ProgramPlayer.makeRest = makeRest;
