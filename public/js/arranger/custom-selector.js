@@ -15,16 +15,15 @@ class CustomSelector extends Component {
         }
 
         return h(
-            'select',
+            "select",
             { onChange: evt => this.handleChange(evt) },
             h(
-                'option',
-                { value: '', selected: true },
-                label,
-                ':'
+                "option",
+                { className: "label", value: "", selected: true },
+                label
             ),
             keys.map(t => h(
-                'option',
+                "option",
                 { key: t, value: t, selected: owner.state[label] === t ? 'selected' : null },
                 t
             ))

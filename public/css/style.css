@@ -181,6 +181,9 @@ body {
     box-shadow: 4px 0px 0px 0px #ffbf81;
     overflow: hidden;
 }
+.cell select {
+    background: inherit;
+}
 
 .cell + .cell {
     border-top: 1px solid rgba(0, 0, 0, 0.5);
@@ -191,13 +194,7 @@ body {
 }
 
 .cell.active {
-    background: rgb(255, 192, 192);
-    box-shadow: 4px 0px 0px 0px rgb(172, 65, 65);
-}
-
-.cell:nth-child(4n + 1).active {
-    background: rgb(138, 193, 255);
-    box-shadow: 4px 0px 0px 0px rgb(172, 65, 65);
+    background: rgb(243, 164, 111);
 }
 
 .note-info {
@@ -210,26 +207,23 @@ body {
     text-align: center;
 }
 .note-info.assign {
-    border: 2px solid black;
-    border-width: 2px 0;
-    box-sizing: border-box;
     animation: wait-for-input 2s ease-in-out 0s infinite;
+    transition: background-color;
 }
 
 @keyframes wait-for-input {
-    0% { border-color: #080; }
-    50% { border-color: #0F0; }
-    100% { border-color: #080}
+    0% { background-color: #080; }
+    50% { background-color: #0F0; }
+    100% { background-color: #080}
 }
 
 .cell-clear {
     float: right;
     position: relative;
     height: 130%;
-    width: 1.5em;
     margin-top: -3%;
     font-family: Verdana;
-    top: 2px;
+    top: -2px;
     font-size: 1em;
     background: inherit;
     border: none;
@@ -275,6 +269,7 @@ body {
     background: orange;
     border: 1px solid black;
     margin: 2px;
+    margin: 2px auto 0;
 }
 
 canvas {

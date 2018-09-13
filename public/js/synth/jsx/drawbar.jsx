@@ -11,13 +11,13 @@ class DrawBar extends Component {
         super(props);
         this.generator = this.props.generator;
         let volume = this.volume = this.props.context.createGain();
-        volume.gain.value = 1.0;
-        volume.connect(this.props.master);
+        volume.gain.value = this.props.value;
+        volume.connect(this.props.out);
     }
 
     render() {
         return (
-            <Slider label={this.props.label} value={this.props.value} onInput={evt => this.handleInput(evt)} />
+            <Slider label={this.props.label} value={this.props.value} onInput={evt => this.handleInput(evt)} cc={this.props.cc}/>
         );
     }
 

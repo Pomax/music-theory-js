@@ -47,22 +47,23 @@ class DrawBars extends Component {
 
         let normalizer = this.props.context.createGain();
         normalizer.gain.value = 1 / definitions.length;
-        normalizer.connect(this.props.master);
+        normalizer.connect(this.props.out);
 
         let DRAW_BARS = this.DRAW_BARS = [];
 
         // We conveniently start with CC 16-19 ("general purpose" 1-4) followed by CC 20-23 (undefined).
         definitions.forEach((def, i) => {
             let drawbar = <DrawBar
-              ref={e => (drawbar.api = e)}
-              label={def.label}
-              value={def.value}
-              offset={tones[i]}
-              context={this.props.context}
-              master={normalizer}
-              generator={this.generator}
-            />;
-            DRAW_BARS[16 + i] = drawbar;
+                ref={e => (drawbar.api = e)}
+                label={def.label}
+                value={def.value}
+                offset={tones[i]}
+                context={this.props.context}
+                out={normalizer}
+                generator={this.generator}
+                cc={16 + i}
+              />
+              DRAW_BARS.push(drawbar);
         });
     }
 

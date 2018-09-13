@@ -6,7 +6,6 @@ function setupAnalyser(context, source) {
 
     analyser.fftSize = Math.pow(2,14);
     let bufferLength = analyser.frequencyBinCount;
-    let dataArray = new Float32Array(bufferLength);
 
     let canvas = document.getElementById("oscilloscope");
     let d = 1024;
@@ -16,23 +15,27 @@ function setupAnalyser(context, source) {
     let keepDrawing = false;
 
     function draw() {
-      if (keepDrawing) requestAnimationFrame(draw);
+        let dataArray = new Float32Array(bufferLength);
+        analyser.getFloatFrequencyData(dataArray);
 
-      analyser.getFloatFrequencyData(dataArray);
+        // transparently clear the canvas
+        canvas.width = d;
+        canvas.height = d;
+        let ctx = canvas.getContext("2d");
 
-      // transparently clear the canvas
-      canvas.width = d;
-      canvas.height = d;
-      let ctx = canvas.getContext("2d");
+        let barWidth = (canvas.width / bufferLength) * 2.5;
+        let posX = 0, barHeight, i;
+        for (i = 0; i < bufferLength; i++) {
+            barHeight = -dataArray[i];
+            ctx.fillStyle = 'rgba(0,0,0)';
+            ctx.fillRect(posX, barHeight*2, barWidth, d);
+            posX += barWidth + 1;
+        }
 
-      let barWidth = (canvas.width / bufferLength) * 2.5;
-      let posX = 0, barHeight, i;
-      for (i = 0; i < bufferLength; i++) {
-        barHeight = -dataArray[i];
-        ctx.fillStyle = 'rgba(0,0,0)';
-        ctx.fillRect(posX, barHeight, barWidth, d-barHeight);
-        posX += barWidth + 1;
-      }
+        // "why not request animation frame?" because I don't
+        // want this to run as fast as possible. Running it as
+        // fast as possible ends up clogging CG like mad.
+        if (keepDrawing) setTimeout(draw, 100);
     }
 
     let controller = {

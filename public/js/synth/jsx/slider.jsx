@@ -1,20 +1,32 @@
 import { h, render, Component } from '../preact.js';
+import { router } from "../router/router.js";
 
 class Slider extends Component {
 
     constructor(props) {
         super(props);
 
+        router.addListener(this, "control");
+
         this.state = {
+            cc: this.props.cc,
             value: this.props.value,
             fidelity: 1000
         };
     }
 
+    onControl(cc, value) {
+        if(cc === this.state.cc) {
+            value = value / 127;
+            this.setState({ value });
+            this.props.onInput(value);
+        }
+    }
+
     render() {
         return (
             <div className="slider">
-                <label onClick={evt => this.learn()}>{ this.props.label }</label>
+                <label onClick={evt => this.learnCC()}>{ this.props.label }</label>
                 <input
                   type="range"
                   min="0"
@@ -27,8 +39,12 @@ class Slider extends Component {
         );
     }
 
-    learn() {
-        console.log('trigger a CC learn pass');
+    learnCC() {
+        if (confirm("Adjust a single controller on your MIDI device after clicking OK,\nto rebind this slider, or hit cancel to keep the current binding.\n ")) {
+            router.learnCC( controlcode => {
+                this.setState({ cc: controlcode });
+            });
+        }
     }
 
     handleInput(evt) {

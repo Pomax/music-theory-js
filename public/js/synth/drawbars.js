@@ -40,7 +40,7 @@ class DrawBars extends Component {
 
         let normalizer = this.props.context.createGain();
         normalizer.gain.value = 1 / definitions.length;
-        normalizer.connect(this.props.master);
+        normalizer.connect(this.props.out);
 
         let DRAW_BARS = this.DRAW_BARS = [];
 
@@ -52,10 +52,11 @@ class DrawBars extends Component {
                 value: def.value,
                 offset: tones[i],
                 context: this.props.context,
-                master: normalizer,
-                generator: this.generator
+                out: normalizer,
+                generator: this.generator,
+                cc: 16 + i
             });
-            DRAW_BARS[16 + i] = drawbar;
+            DRAW_BARS.push(drawbar);
         });
     }
 

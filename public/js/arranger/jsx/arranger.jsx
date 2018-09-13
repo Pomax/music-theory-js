@@ -13,7 +13,7 @@ class Arranger extends Component {
     render() {
         return (
             <div className="controls">
-                <Pattern ref={ e => (this.pattern = e) } arranger={this} celltype={ TonicStep }/>
+                <Pattern ref={ e => (this.pattern = e) } arranger={this} steptype={ TonicStep }/>
                 <button onClick={evt => this.stop()}>◼</button>
                 <button onClick={evt => this.play()}>▶</button>
                 <label className="bpm">
@@ -30,13 +30,14 @@ class Arranger extends Component {
     }
 
     demo() {
-        this.pattern.demo();
-        this.play();
+        this.pattern.loadDemo();
     }
 
     play() {
-        this.updateProgram();
-        this.player.play();
+        let program = this.updateProgram();
+        if (program && program.length) {
+            this.player.play();
+        }
     }
 
     updateProgram(program) {
@@ -44,6 +45,7 @@ class Arranger extends Component {
             program = this.pattern.buildProgram();
         }
         this.player.setProgram(program);
+        return program;
     }
 
     stop() {

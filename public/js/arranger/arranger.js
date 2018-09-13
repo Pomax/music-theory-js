@@ -14,7 +14,7 @@ class Arranger extends Component {
         return h(
             "div",
             { className: "controls" },
-            h(Pattern, { ref: e => this.pattern = e, arranger: this, celltype: TonicStep }),
+            h(Pattern, { ref: e => this.pattern = e, arranger: this, steptype: TonicStep }),
             h(
                 "button",
                 { onClick: evt => this.stop() },
@@ -44,13 +44,14 @@ class Arranger extends Component {
     }
 
     demo() {
-        this.pattern.demo();
-        this.play();
+        this.pattern.loadDemo();
     }
 
     play() {
-        this.updateProgram();
-        this.player.play();
+        let program = this.updateProgram();
+        if (program && program.length) {
+            this.player.play();
+        }
     }
 
     updateProgram(program) {
@@ -58,6 +59,7 @@ class Arranger extends Component {
             program = this.pattern.buildProgram();
         }
         this.player.setProgram(program);
+        return program;
     }
 
     stop() {

@@ -1,4 +1,7 @@
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 import { h, render, Component } from '../preact.js';
+import { Theory } from '../theory.js';
 
 /**
  *
@@ -12,23 +15,33 @@ class Pattern extends Component {
 
     render() {
         return h(
-            "div",
-            { className: "cells" },
+            'div',
+            { className: 'cells' },
             this.state.cells,
             h(
-                "button",
+                'button',
                 { onClick: evt => this.newCell() },
-                "+"
+                '+'
             )
         );
     }
 
-    newCell() {
-        let CellType = this.props.celltype;
+    newCell(options) {
         let cells = this.state.cells;
-        let cell = h(CellType, { ref: e => cell.api = e, owner: this, onChange: evt => this.handleCellUpdate(), onDelete: evt => this.deleteCell(cell) });
+        let cell = this.buildCellComponent(options);
         cells.push(cell);
         this.setState({ cells });
+    }
+
+    buildCellComponent(options) {
+        let StepType = this.props.steptype;
+        let cell = h(StepType, _extends({
+            ref: e => cell.api = e,
+            owner: this,
+            onChange: evt => this.handleCellUpdate(),
+            onDelete: evt => this.deleteCell(cell)
+        }, options));
+        return cell;
     }
 
     deleteCell(cell) {
@@ -44,8 +57,11 @@ class Pattern extends Component {
         this.state.cells.forEach(cell => cell.api.deactivate());
     }
 
-    demo() {
-        // ...
+    loadDemo() {
+        let _c = o => this.buildCellComponent(o);
+        let note = Theory.nameToNumber('C4');
+        let cells = [_c({ note, velocity: 50, chord: 'major', tonic: 'I', inversion: -1, octave: 0, duration: '1' }), _c({ note: false, velocity: 0, chord: '', tonic: 'VI', inversion: 0, octave: -1, duration: '1' }), _c({ note: false, velocity: 0, chord: '', tonic: 'i', inversion: -1, octave: 0, duration: '1' }), _c({ note: false, velocity: 0, chord: '', tonic: 'ii', inversion: -1, octave: 0, duration: '2' }), _c({ note: false, velocity: 0, chord: '', tonic: 'II', inversion: 0, octave: 0, duration: '2' })];
+        this.setState({ cells });
     }
 
     handleCellUpdate(cell, step) {

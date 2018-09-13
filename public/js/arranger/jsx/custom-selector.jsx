@@ -16,7 +16,7 @@ class CustomSelector extends Component {
 
         return (
             <select onChange={ evt => this.handleChange(evt) }>
-                <option value='' selected>{label}:</option>
+                <option className="label" value="" selected>{label}</option>
                 { keys.map(t => <option key={t} value={t} selected={owner.state[label] === t ? 'selected':null}>{t}</option>) }
             </select>
         );

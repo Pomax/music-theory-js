@@ -66,7 +66,9 @@ class Synth {
     render(h(DrawBars, {
       ref: e => (this.drawbars = e),
       context: this.context,
-      master: this.masterVolume.node
+      out: masterGain,
+      attack: 0.020,
+      decay: 0.020
     }), top);
 
     // keyboard visualisation

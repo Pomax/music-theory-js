@@ -10,28 +10,33 @@ import { router } from "../router/router.js";
  * ...
  */
 class Step extends Component {
-    constructor(owner, top) {
-        super();
-        this.owner = owner;
+    constructor(props) {
+        super(props);
+
+        this.owner = this.props.owner;
         this.content = false;
+
         this.selectors = {
             duration: INTERVALS,
             chord: Theory.chords,
             inversion: [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5],
             octave: [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]
         };
+
         this.state = {
-            note: false,
-            velocity: 0,
-            duration: '4',
-            inversion: 0,
-            octave: 0
+            note: this.props.note || false,
+            velocity: this.props.velocity || 0,
+            duration: this.props.duration || '4',
+            chord: this.props.chord || '',
+            inversion: this.props.inversion || 0,
+            octave: this.props.octave || 0
         };
     }
 
     render() {
         let topClasses = ["cell", this.state.active ? 'active' : ''].join(' ');
         let noteClasses = ["note-info", this.state.listening ? 'assign' : ''].join(' ');
+        let label = this.state.note ? `${this.state.note}-${this.state.velocity}` : '-';
 
         return h(
             "div",
@@ -39,9 +44,7 @@ class Step extends Component {
             h(
                 "div",
                 { className: noteClasses, onClick: evt => this.assignNote(evt) },
-                this.state.note,
-                "-",
-                this.state.velocity
+                label
             ),
             this.renderSelectors(),
             h(
@@ -60,7 +63,19 @@ class Step extends Component {
 
     assignNote(evt) {
         this.setState({ listening: true });
+        this.activateAssignmentListeners();
+    }
+
+    activateAssignmentListeners() {
         router.addListener(this, "noteon");
+        let escListener = evt => {
+            if (evt.keyCode === 27) {
+                router.removeListener(this, "noteon");
+                this.setState({ listening: false });
+            }
+            document.removeEventListener("keydown", escListener);
+        };
+        document.addEventListener("keydown", escListener);
     }
 
     getStep() {
