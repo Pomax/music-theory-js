@@ -14,6 +14,7 @@ class Arranger extends Component {
     render() {
         return (
             <div>
+                <div id="fft"></div>
                 <Pattern ref={ e => (this.pattern = e) } arranger={this} steptype={ TonicStep }/>
                 <div className="controls">
                     <button onClick={evt => this.stop()}><span class="stop"></span></button>
@@ -23,7 +24,7 @@ class Arranger extends Component {
                     BPM
                     </label>
                     <button onClick={evt => this.demo()}>demo</button>
-                    </div>
+                </div>
             </div>
             );
     }

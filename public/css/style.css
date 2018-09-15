@@ -175,7 +175,29 @@ body {
     margin-left: 0.5em;
 }
 
+#fft {
+    position: absolute;
+    width: calc(100% - 2em);
+    z-index: 0;
+    bottom: 4em;
+    opacity: 0.6;
+    padding: 0 3px;
+    border-bottom: 1px solid orange;
+}
+
+#fft svg {
+    width: 100%;
+    height: auto;
+}
+
+#fft svg rect {
+    fill: #428ad2;
+    stroke: #ffbf81;
+}
+
 .cells {
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-flow: column wrap;
     align-content: space-around;
@@ -253,6 +275,7 @@ body {
     transform: translate(-50%, 0);
     width: 100%;
     text-align: center;
+    z-index: 1;
 }
 
 .controls label {
@@ -331,6 +354,30 @@ button.pattern-add {
     display: flex;
     flex-direction: column;
     font-family: sans-serif;
+    margin-right: 1em;
+}
+
+.multi-track-sequencer.collapsed {
+    width: 0em;
+    margin-right: 0;
+    overflow: hidden;
+}
+
+.multi-track-sequencer-ui-toggle {
+    background: #928c7e;
+    width: calc(1em + 1px);
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 0 10px 10px 0;
+    box-shadow: 11px 11px 3px 1px #ffbf81;
+    border-left: 1px dotted orange;
+    cursor:pointer;
+    line-height: 16;
+    color: #ccc;
+    text-shadow: 1px 1px 1px black;
+    font-weight: bold;
 }
 
 .multi-track-sequencer .track {
@@ -352,7 +399,29 @@ button.pattern-add {
     display: inline-block;
     width: 1em;
     height: 1em;
-    transition: background 0.4s;
+    transition: background 0.2s;
+}
+
+.multi-track-sequencer .track .step {
+    cursor: pointer;
+    user-select: none;
+}
+
+.multi-track-sequencer .track .step.play {
+    background: #16cc25;
+}
+
+.multi-track-sequencer .track .step.cut {
+    background: red;
+}
+
+.multi-track-sequencer .track .step.cut-and-play {
+    background: red;
+    border: 0.5em solid #16cc25;
+    box-sizing: border-box;
+    border-left-color: transparent;
+    border-top-color: transparent;
+    margin-left: 1px;
 }
 
 .multi-track-sequencer .track div.active {

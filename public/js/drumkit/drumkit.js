@@ -1,8 +1,8 @@
 import { h, render, Component } from "../preact.js";
 import { ifdebug } from "../if-debug.js";
-import { samples } from "./samples.js";
+import { samples } from "../shared/samples.js";
 import { MultiTrackSequencer } from "./multi-track-sequencer.js";
-import { context, masterGain } from "../audio-context.js";
+import { context, masterGain } from "../shared/audio-context.js";
 
 function load(url) {
     let sample = {

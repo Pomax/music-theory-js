@@ -1,5 +1,5 @@
 import { AudioSource } from './audio-source.js';
-import { context } from "../audio-context.js";
+import { context } from "./audio-context.js";
 
 class AudioGenerator {
 

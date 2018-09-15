@@ -1,8 +1,8 @@
 import { h, render, Component } from '../preact.js';
-import { AudioGenerator } from "./audio-generator.js";
+import { AudioGenerator } from "../shared/audio-generator.js";
 import { DrawBar } from "./drawbar.js";
 import { router } from "../router/router.js";
-import { context } from "../audio-context.js";
+import { context } from "../shared/audio-context.js";
 
 const offsets = [[-12, 0, 7, 12, 19, 26, 31, 38]];
 

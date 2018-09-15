@@ -21,6 +21,7 @@
     "babel:arranger": "babel --out-dir public/js/arranger public/js/arranger/jsx",
     "babel:synth": "babel --out-dir public/js/synth public/js/synth/jsx",
     "babel:drumkit": "babel --out-dir public/js/drumkit public/js/drumkit/jsx",
+    "babel:shared": "babel --out-dir public/js/shared public/js/shared/jsx",
     "rollup": "rollup -f es src/music-theory.js > music-theory.js",
     "copy": "shx cp music-theory.js public/js/theory.js",
     "server": "http-server public",

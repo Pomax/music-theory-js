@@ -1,6 +1,6 @@
 import { h, render, Component } from "../preact.js";
-import { INTERVALS } from "../intervals.js";
-import { Ticker } from "../arranger/ticker.js";
+import { INTERVALS } from "../shared/intervals.js";
+import { Ticker } from "../shared/ticker.js";
 import { Track } from "./track.js";
 
 class MultiTrackSequencer extends Component {
@@ -20,15 +20,33 @@ class MultiTrackSequencer extends Component {
             this.namedTracks[name] = track;
         });
 
-        this.state = { tracks };
+        this.state = {
+            tracks,
+            collapsed: true
+        };
     }
 
     render() {
         return h(
             "div",
-            { className: "multi-track-sequencer" },
-            this.state.tracks
+            null,
+            h(
+                "div",
+                { className: "multi-track-sequencer" + (this.state.collapsed ? " collapsed" : "") },
+                this.state.tracks
+            ),
+            h(
+                "div",
+                { className: "multi-track-sequencer-ui-toggle", onClick: evt => this.toggleUI() },
+                this.state.collapsed ? '▷' : '◁'
+            )
         );
+    }
+
+    toggleUI() {
+        this.setState({
+            collapsed: !this.state.collapsed
+        });
     }
 
     getTrackNames() {

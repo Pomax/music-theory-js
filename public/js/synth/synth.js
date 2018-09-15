@@ -2,10 +2,10 @@ import { h, render } from '../preact.js';
 
 import { Keyboard } from "./keyboard.js";
 import { DrawBars } from "./drawbars.js";
-import { code } from "../router/midi-codes.js";
-import { LabelBar } from "./jsx/label-bar.js";
+import { code } from "../shared/midi-codes.js";
+import { LabelBar } from "./label-bar.js";
 import { router } from "../router/router.js";
-import { context, masterGain } from "../audio-context.js";
+import { context, masterGain } from "../shared/audio-context.js";
 
 const volumeCode = code('Volume (coarse)');
 

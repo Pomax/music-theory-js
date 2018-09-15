@@ -71,3 +71,8 @@ monitor(
   chokidar.watch(['public/js/drumkit/jsx/*.jsx'], { ignored: [] }),
   ['babel:drumkit']
 )
+
+monitor(
+  chokidar.watch(['public/js/shared/jsx/*.jsx'], { ignored: [] }),
+  ['babel:shared']
+)

@@ -1,5 +1,5 @@
 import { h, render, Component } from "../preact.js";
-import { Ticker } from "../arranger/ticker.js";
+import { Ticker } from "../shared/ticker.js";
 
 // step sequencer, 32 step by default
 class Track extends Component {
@@ -21,24 +21,26 @@ class Track extends Component {
                 <div className="label">{ this.props.name }</div>
                 {
                 this.state.steps.map((step,i) => {
-                    return (
-                        <div
-                            className={'step' + (this.state.playing === i ? ' active':'') }
-                            onClick={e => this.cycle(i)}>{this.getLabel(step)}</div>
-                    );
+                    let stepClass = [
+                        'step',
+                        this.state.playing === i ? ' active':'',
+                        this.getPlayStateClass(step)
+                    ].filter(v => v).join(' ');
+
+                    return <div className={stepClass} onClick={e => this.cycle(i)}> </div>;
                 })
                 }
             </div>
         );
     }
 
-    getLabel(step) {
+    getPlayStateClass(step) {
         if (!step) return '';
-        if (step.volume && !step.interrupt) return '○';
-        if (step.volume && step.interrupt) return '⦻';
-        if (!step.volume && step.interrupt) return '×';
+        if (step.volume && !step.interrupt) return 'play';
+        if (step.volume && step.interrupt) return 'cut-and-play';
+        if (!step.volume && step.interrupt) return 'cut';
         console.log(step);
-        return '?'; // we should never be able to get here
+        return ''; // we should never be able to get here
     }
 
     reset() {

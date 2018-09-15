@@ -1,5 +1,5 @@
 import { getFrequency } from "./get-frequency.js";
-import { context } from "../audio-context.js";
+import { context } from "./audio-context.js";
 
 
 class AudioSource {

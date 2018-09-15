@@ -1,6 +1,6 @@
 import { h, render, Component } from '../preact.js';
 import { Slider } from "./slider.js";
-import { context } from "../audio-context.js";
+import { context } from "../shared/audio-context.js";
 
 /**
  *

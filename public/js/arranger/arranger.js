@@ -15,6 +15,7 @@ class Arranger extends Component {
         return h(
             "div",
             null,
+            h("div", { id: "fft" }),
             h(Pattern, { ref: e => this.pattern = e, arranger: this, steptype: TonicStep }),
             h(
                 "div",

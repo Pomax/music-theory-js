@@ -1,5 +1,5 @@
-import { Ticker } from "./ticker.js";
-import { INTERVALS } from "../intervals.js";
+import { Ticker } from "../shared/ticker.js";
+import { INTERVALS } from "../shared/intervals.js";
 
 /**
  *
