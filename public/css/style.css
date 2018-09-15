@@ -390,21 +390,24 @@ button.pattern-add {
     border-bottom: 1px solid #ffffff75;
 }
 
-.multi-track-sequencer .track div.label {
-    width: 4em;
-    text-align: left;
-}
-
 .multi-track-sequencer .track div {
     display: inline-block;
     width: 1em;
     height: 1em;
-    transition: background 0.2s;
+    border-color: transparent;
+    transition: background 0.2s, border-color 0.2s;
+    user-select: none;
 }
 
-.multi-track-sequencer .track .step {
-    cursor: pointer;
+.multi-track-sequencer .track div.label {
+    width: 4em;
+    text-align: left;
     user-select: none;
+    cursor: pointer;
+}
+
+.multi-track-sequencer .track div.step {
+    cursor: pointer;
 }
 
 .multi-track-sequencer .track .step.play {
@@ -412,7 +415,12 @@ button.pattern-add {
 }
 
 .multi-track-sequencer .track .step.cut {
-    background: red;
+    background: transparent;
+    border: 0.5em solid red;
+    box-sizing: border-box;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    margin-left: 1px;
 }
 
 .multi-track-sequencer .track .step.cut-and-play {

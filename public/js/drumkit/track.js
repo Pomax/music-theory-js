@@ -21,7 +21,7 @@ class Track extends Component {
             { className: "track" },
             h(
                 "div",
-                { className: "label" },
+                { className: "label", onClick: evt => this.preview() },
                 this.props.name
             ),
             this.state.steps.map((step, i) => {
@@ -66,16 +66,24 @@ class Track extends Component {
         }
     }
 
+    preview() {
+        this.props.instrument.play(1.0);
+    }
+
+    playInstrument(instruction) {
+        let instrument = this.props.instrument;
+        if (instruction.interrupt) {
+            instrument.interrupt();
+        }
+        instrument.play(instruction.volume);
+    }
+
     playStep(step) {
         this.setState({ playing: step });
         let instruction = this.steps[step];
 
         if (instruction) {
-            let instrument = this.props.instrument;
-            if (instruction.interrupt) {
-                instrument.interrupt();
-            }
-            instrument.play(instruction.volume);
+            this.playInstrument(instruction);
         }
     }
 
@@ -83,7 +91,9 @@ class Track extends Component {
         let e = this.steps[step];
         if (!e) {
             // do nothing => play this instrument
-            return this.trigger(step);
+            this.trigger(step);
+            this.playInstrument(this.steps[step]);
+            return;
         }
         if (!e.interrupt) {
             // play => play and interrupt previous
