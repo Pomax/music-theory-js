@@ -66,3 +66,8 @@ monitor(
   chokidar.watch(['public/js/synth/jsx/*.jsx'], { ignored: [] }),
   ['babel:synth']
 )
+
+monitor(
+  chokidar.watch(['public/js/drumkit/jsx/*.jsx'], { ignored: [] }),
+  ['babel:drumkit']
+)

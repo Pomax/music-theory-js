@@ -16,11 +16,15 @@ class Pattern extends Component {
     render() {
         return h(
             'div',
-            { className: 'cells' },
-            this.state.cells,
+            null,
+            h(
+                'div',
+                { className: 'cells' },
+                this.state.cells
+            ),
             h(
                 'button',
-                { onClick: evt => this.newCell() },
+                { className: 'pattern-add', onClick: evt => this.newCell() },
                 '+'
             )
         );

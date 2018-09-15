@@ -13,9 +13,11 @@ class Pattern extends Component {
 
     render() {
         return (
-            <div className="cells">
-                { this.state.cells }
-                <button onClick={evt => this.newCell()}>+</button>
+            <div>
+                <div className="cells">
+                    { this.state.cells }
+                </div>
+                <button className="pattern-add" onClick={evt => this.newCell()}>+</button>
             </div>
         );
     }

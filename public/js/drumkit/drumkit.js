@@ -1,3 +1,4 @@
+import { h, render, Component } from "../preact.js";
 import { ifdebug } from "../if-debug.js";
 import { samples } from "./samples.js";
 import { MultiTrackSequencer } from "./multi-track-sequencer.js";
@@ -17,13 +18,14 @@ function load(url) {
             source.start() ;
             source.onended = (evt) => {
                 source.disconnect();
-                gain.disconnect(masterGain)
+                try { gain.disconnect(masterGain) }
+                catch(e) { console.warn(e); }
             }
         },
         interrupt: () => {
             if (sample.source) {
-                sample.source.disconnect(sample.gain);
-                sample.gain.disconnect(masterGain);
+                try { sample.source.disconnect(sample.gain); } catch(e) { console.warn(e); }
+                try { sample.gain.disconnect(masterGain); } catch(e) { console.warn(e); }
             }
         }
     };
@@ -57,27 +59,30 @@ const drumkit = {
     hihat1: load(samples.hihat.closed[3]),
     hihat2: load(samples.hihat.closed[4]),
     hihat3: load(samples.hihat.open[1]),
-    ride1: load(samples.ride[1]),
+    ride1: load(samples.ride[2]),
     ride2: load(samples.ride[4]),
     crash1: load(samples.crash[3]),
     crash2: load(samples.crash[2]),
 }
 
-const sequencer = new MultiTrackSequencer(drumkit);
+const sequencer = h(MultiTrackSequencer, {
+    ref: e => (sequencer.api = e),
+    instruments: drumkit
+});
 
 // A simple demo program.
 sequencer.demo = () => {
-    let s = sequencer;
+    let s = sequencer.api;
     for(let i=0; i<32; i++) {
         if([0,3,8,9,11,  16,19,24,25,27].indexOf(i)>-1) {
             s.trigger(i, 'kick1');
         }
         if((i+4)%8 === 0) {
             s.trigger(i, 'stick2');
-            s.trigger(i+1, 'stick2', 0.3);
+            s.trigger(i+1, 'stick2', 0.2);
         }
         if((i+4)%4 === 2) {
-            s.trigger(i, 'ride2');
+            s.trigger(i, 'ride2', 0.5);
         }
         if(i !== 7 && i !== 23) {
             s.trigger(i, 'hihat2', 1 - (i%4)*0.2);
@@ -88,9 +93,14 @@ sequencer.demo = () => {
     }
 }
 
+function setupSequencer(top) {
+    render(sequencer, top);
+}
+
+
 ifdebug( () => {
   window.drumkit = drumkit;
-  window.drumkit.sequencer = sequencer;
+  window.sequencer = sequencer;
 });
 
-export { drumkit, sequencer };
+export { drumkit, sequencer, setupSequencer };

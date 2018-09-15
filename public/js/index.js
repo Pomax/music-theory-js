@@ -1,12 +1,14 @@
 import { router } from "./router/router.js";
 import { Synth } from "./synth/synth.js";
 import { setupArranger } from "./arranger/arranger.js";
+import { setupSequencer } from "./drumkit/drumkit.js";
 
 const device = document.getElementById('device');
 
 function loadSynth(withMIDI) {
     new Synth(document.getElementById('synth'), 1);
     setupArranger(document.getElementById('arranger'));
+    setupSequencer(document.getElementById('drumkit'));
     document.getElementById('components').classList.remove('uninitialized');
     document.querySelector('.screenshot').classList.add('hidden');
 }

@@ -3,7 +3,7 @@ import { router } from "../router/router.js";
 import { Pattern } from "./pattern.js";
 import { TonicStep } from "./tonic-step.js";
 import { ProgramPlayer } from "./program-player.js";
-import { sequencer as percussionTrack } from "../drumkit/drumkit.js";
+import { sequencer } from "../drumkit/drumkit.js";
 
 class Arranger extends Component {
     constructor(top) {
@@ -14,28 +14,32 @@ class Arranger extends Component {
     render() {
         return h(
             "div",
-            { className: "controls" },
+            null,
             h(Pattern, { ref: e => this.pattern = e, arranger: this, steptype: TonicStep }),
             h(
-                "button",
-                { onClick: evt => this.stop() },
-                h("span", { "class": "stop" })
-            ),
-            h(
-                "button",
-                { onClick: evt => this.play() },
-                h("span", { "class": "play" })
-            ),
-            h(
-                "label",
-                { className: "bpm" },
-                h("input", { type: "number", min: "1", max: "400", value: "120", onChange: evt => this.setBPM(evt.target.value) }),
-                "BPM"
-            ),
-            h(
-                "button",
-                { onClick: evt => this.demo() },
-                "demo"
+                "div",
+                { className: "controls" },
+                h(
+                    "button",
+                    { onClick: evt => this.stop() },
+                    h("span", { "class": "stop" })
+                ),
+                h(
+                    "button",
+                    { onClick: evt => this.play() },
+                    h("span", { "class": "play" })
+                ),
+                h(
+                    "label",
+                    { className: "bpm" },
+                    h("input", { type: "number", min: "1", max: "400", value: "120", onChange: evt => this.setBPM(evt.target.value) }),
+                    "BPM"
+                ),
+                h(
+                    "button",
+                    { onClick: evt => this.demo() },
+                    "demo"
+                )
             )
         );
     }
@@ -45,7 +49,7 @@ class Arranger extends Component {
     }
 
     demo() {
-        percussionTrack.demo();
+        sequencer.demo();
         this.pattern.loadDemo();
     }
 

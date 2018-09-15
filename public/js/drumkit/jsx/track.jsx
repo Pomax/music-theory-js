@@ -16,23 +16,19 @@ class Track extends Component {
     }
 
     render() {
-        return h(
-            "div",
-            { className: "track" },
-            h(
-                "div",
-                { className: "label" },
-                this.props.name
-            ),
-            this.state.steps.map((step, i) => {
-                return h(
-                    "div",
-                    {
-                        className: 'step' + (this.state.playing === i ? ' active' : ''),
-                        onClick: e => this.cycle(i) },
-                    this.getLabel(step)
-                );
-            })
+        return (
+            <div className="track">
+                <div className="label">{ this.props.name }</div>
+                {
+                this.state.steps.map((step,i) => {
+                    return (
+                        <div
+                            className={'step' + (this.state.playing === i ? ' active':'') }
+                            onClick={e => this.cycle(i)}>{this.getLabel(step)}</div>
+                    );
+                })
+                }
+            </div>
         );
     }
 
@@ -59,7 +55,7 @@ class Track extends Component {
     }
 
     tick(tickCount) {
-        let step = (tickCount / this.ticksPerStep | 0) % this.stepCount;
+        let step = ((tickCount / this.ticksPerStep)|0) % this.stepCount;
         if (step !== this.step) {
             this.step = step;
             this.playStep(this.step);
@@ -88,17 +84,19 @@ class Track extends Component {
         if (!e.interrupt) {
             // play => play and interrupt previous
             e.interrupt = true;
-        } else if (e.volume) {
+        }
+        else if (e.volume) {
             // play and interrupt previous => interrupt only
             e.volume = 0;
-        } else {
+        }
+        else {
             // interrupt only => do nothing
             this.steps[step] = false;
         }
         this.updateSteps();
     }
 
-    trigger(step, volume = 1.0, interrupt = false) {
+    trigger(step, volume=1.0, interrupt=false) {
         this.steps[step] = { volume, interrupt };
         this.updateSteps();
     }
@@ -111,7 +109,7 @@ class Track extends Component {
 
     off(step) {
         if (step !== undefined) {
-            return this.steps[step] = EMPTY;
+            return (this.steps[step] = EMPTY);
         }
         // if this was called as off(), clear ALL instruction.
         this.steps = [...new Array(stepCount)];

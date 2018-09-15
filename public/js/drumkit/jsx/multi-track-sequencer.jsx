@@ -14,8 +14,9 @@ class MultiTrackSequencer extends Component {
         let tracks = this.tracks = [];
         this.namedTracks = {};
 
+
         Object.keys(instruments).map(name => {
-            let track = h(Track, { ref: e => track.api = e, name: name, instrument: instruments[name], stepCount: stepCount, ticksPerStep: ticksPerStep });
+            let track = <Track ref={e => (track.api=e)} name={name} instrument={instruments[name]} stepCount={stepCount} ticksPerStep={ticksPerStep} />
             this.tracks.push(track);
             this.namedTracks[name] = track;
         });
@@ -24,11 +25,7 @@ class MultiTrackSequencer extends Component {
     }
 
     render() {
-        return h(
-            "div",
-            { className: "multi-track-sequencer" },
-            this.state.tracks
-        );
+        return <div className="multi-track-sequencer">{ this.state.tracks }</div>;
     }
 
     getTrackNames() {
@@ -53,7 +50,7 @@ class MultiTrackSequencer extends Component {
 
     clear(step, trackName) {
         if (trackName) {
-            return this.namedTracks[trackName].api.off(step);
+           return this.namedTracks[trackName].api.off(step);
         }
         this.tracks.forEach(t => t.api.off(step));
     }

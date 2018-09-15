@@ -3,7 +3,7 @@ import { router } from "../router/router.js";
 import { Pattern } from "./pattern.js";
 import { TonicStep } from "./tonic-step.js";
 import { ProgramPlayer } from "./program-player.js";
-import { sequencer as percussionTrack } from "../drumkit/drumkit.js";
+import { sequencer } from "../drumkit/drumkit.js";
 
 class Arranger extends Component {
     constructor(top) {
@@ -13,17 +13,19 @@ class Arranger extends Component {
 
     render() {
         return (
-            <div className="controls">
+            <div>
                 <Pattern ref={ e => (this.pattern = e) } arranger={this} steptype={ TonicStep }/>
-                <button onClick={evt => this.stop()}><span class="stop"></span></button>
-                <button onClick={evt => this.play()}><span class="play"></span></button>
-                <label className="bpm">
-                  <input type="number" min="1" max="400" value="120" onChange={evt => this.setBPM(evt.target.value)}/>
-                  BPM
-                </label>
-                <button onClick={evt => this.demo()}>demo</button>
+                <div className="controls">
+                    <button onClick={evt => this.stop()}><span class="stop"></span></button>
+                    <button onClick={evt => this.play()}><span class="play"></span></button>
+                    <label className="bpm">
+                    <input type="number" min="1" max="400" value="120" onChange={evt => this.setBPM(evt.target.value)}/>
+                    BPM
+                    </label>
+                    <button onClick={evt => this.demo()}>demo</button>
+                    </div>
             </div>
-        );
+            );
     }
 
     setBPM(bpm) {
@@ -31,7 +33,7 @@ class Arranger extends Component {
     }
 
     demo() {
-        percussionTrack.demo();
+        sequencer.demo();
         this.pattern.loadDemo();
     }
 

@@ -165,7 +165,7 @@ body {
 #arranger {
     position: relative;
     z-index: 2;
-    min-width: 25rem;
+    min-width: 27rem;
     display: flex;
     background: #428ad2;
     padding: 1em;
@@ -279,11 +279,17 @@ body {
     text-shadow: 1px 1px 0 black;
 }
 
-.controls button {
+#arranger button {
     background: orange;
     border: 1px solid black;
     margin: 2px;
     margin: 2px auto 0;
+}
+
+button.pattern-add {
+    width: 2em;
+    display: block;
+    margin-top: 1em;
 }
 
 .controls button .stop {
@@ -308,16 +314,51 @@ body {
     box-shadow: -2px 0 0 0 black;
 }
 
-canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 1.0;
-    transition: opacity 1s;
+#drumkit {
+    z-index: 3;
+    background: #428ad2;
+    display: inline-block;
+    height: 16em;
+    padding: 5px;
+    position: relative;
+    top: 2em;
+    border-radius: 0 0.5em 0.5em 0;
+    left: 0.5em;
+    box-shadow: 11px 11px 3px 1px #ffbf81;
 }
 
-canvas.fadeout {
-    opacity: 0;
+.multi-track-sequencer {
+    display: flex;
+    flex-direction: column;
+    font-family: sans-serif;
+}
+
+.multi-track-sequencer .track {
+    background: transparent;
+    height: 1em;
+    text-align: center;
+    color: white;
+    display: block;
+    white-space: nowrap;
+    border-bottom: 1px solid #ffffff75;
+}
+
+.multi-track-sequencer .track div.label {
+    width: 4em;
+    text-align: left;
+}
+
+.multi-track-sequencer .track div {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    transition: background 0.4s;
+}
+
+.multi-track-sequencer .track div.active {
+    background:rgba(255,255,255,0.5);
+}
+
+.multi-track-sequencer .track > div + div {
+    border-left: 1px solid rgba(255,255,255,0.3);
 }
