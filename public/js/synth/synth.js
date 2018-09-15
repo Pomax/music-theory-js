@@ -1,12 +1,11 @@
 import { h, render } from '../preact.js';
 
-import { AudioSource } from "./audio-source.js";
 import { Keyboard } from "./keyboard.js";
 import { DrawBars } from "./drawbars.js";
 import { code } from "../router/midi-codes.js";
 import { LabelBar } from "./jsx/label-bar.js";
 import { router } from "../router/router.js";
-import { setupAnalyser } from "./show-fft.js";
+import { context, masterGain } from "../audio-context.js";
 
 const volumeCode = code('Volume (coarse)');
 
@@ -20,11 +19,7 @@ class Synth {
     router.addListener(this, "noteoff");
     router.addListener(this, "control");
 
-    // master audio context
-    const context = this.context = new (window.AudioContext || window.webkitAudioContext)();
-
     // master volume control
-    let masterGain = context.createGain();
     let master = this.masterVolume = {
       node: masterGain,
       value: startVolume || 0.5,
@@ -34,11 +29,6 @@ class Synth {
       }
     };
     masterGain.gain.value = master.value;
-
-    // Hook up the master volume to the speakers,
-    // and set up a visualiser, because they're cool.
-    masterGain.connect(context.destination);
-    setupAnalyser(context, masterGain);
 
     // Right now we only have one {CC => control}
     // binding, but we still need a controller
@@ -65,7 +55,6 @@ class Synth {
     // drawbars
     render(h(DrawBars, {
       ref: e => (this.drawbars = e),
-      context: this.context,
       out: masterGain,
       attack: 0.020,
       decay: 0.020
@@ -93,7 +82,10 @@ class Synth {
 
   stopNote(note) {
     let active = this.generators[note];
-    if (active) { active.stop(); }
+    if (active) {
+      active.stop();
+      this.generators[note] = false;
+    }
   }
 
   onControl(controller, value) {

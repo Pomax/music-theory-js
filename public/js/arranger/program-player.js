@@ -1,4 +1,3 @@
-import { Theory } from "../theory.js";
 import { Ticker } from "./ticker.js";
 import { INTERVALS } from "../intervals.js";
 
@@ -8,7 +7,10 @@ import { INTERVALS } from "../intervals.js";
 class ProgramPlayer {
   constructor(arranger, BMP) {
     this.arranger = arranger;
-    this.ticker = new Ticker(this, BMP);
+
+    this.ticker = Ticker.getMaster(this);
+    this.ticker.setBPM(BMP);
+
     this.intervals = INTERVALS;
     this.step = this.getDummyStep()
     this.program = [this.step];
@@ -36,7 +38,13 @@ class ProgramPlayer {
   }
 
   play() { this.ticker.play(); }
+
+  tickStarted() {}
+
   stop() { this.ticker.stop(); this.cleanup(); }
+
+  tickStopped() {}
+
 
   tick(tickCount) {
     if (this.step.end <= tickCount) {

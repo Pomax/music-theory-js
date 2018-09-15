@@ -1,5 +1,6 @@
 import { MIDIListener } from "./listener.js";
 import { STATUS_TYPES } from "./status-types.js";
+import { ifdebug } from "../if-debug.js";
 
 /**
  *
@@ -110,6 +111,8 @@ class MIDIRouter {
 
 const router = new MIDIRouter();
 
-if (typeof window !== "undefined" && window.DEBUG) { window.MIDIrouter = router; }
+ifdebug( () => {
+    window.MIDIrouter = router;
+});
 
 export { router };

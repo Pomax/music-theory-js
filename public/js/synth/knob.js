@@ -1,4 +1,5 @@
 import { h, render, Component } from '../preact.js';
+import { context } from "../audio-context.js";
 
 class GainKnob extends Component {
 
@@ -10,9 +11,9 @@ class GainKnob extends Component {
             fidelity: 1000
         };
 
-        this.node = this.props.context.createGain();
+        this.node = context.createGain();
         let destination = this.props.master;
-        destination = destination ? destination : this.props.context;
+        destination = destination ? destination : context;
         this.node.connect(destination);
     }
 

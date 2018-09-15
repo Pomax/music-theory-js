@@ -1,3 +1,9 @@
+function ifdebug(fn) {
+    if (typeof window !== "undefined" && window.DEBUG) {
+        fn();
+    }
+}
+
 // The tools we use to harmonize music.
 
 const CHORDS = {
@@ -312,7 +318,7 @@ class Element {
   setDuration(durationMilliseconds) { this.duration = durationMilliseconds; }
 }
 
-if (typeof window !== "undefined" && window.DEBUG) {
+ifdebug( () => {
   window.Element = Element;
 
   Element.prototype._play = function(duration=500) {
@@ -325,6 +331,6 @@ if (typeof window !== "undefined" && window.DEBUG) {
   };
 
   window.Theory = Theory;
-}
+});
 
 export { Theory, Element };

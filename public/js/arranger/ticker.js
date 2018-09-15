@@ -2,9 +2,27 @@
  *
  */
 class Ticker {
-  constructor(receiver, BPM) {
-    this.receiver = receiver;
+  constructor(BPM, receivers) {
     this.BPM = BPM;
+    this.receivers = [];
+
+    if (receivers) {
+      if (!receivers.forEach) {
+        receivers = [ receivers ];
+      }
+      this.receivers = receivers;
+    }
+  }
+
+  addReceiver(r) {
+    this.receivers.push(r);
+  }
+
+  removeReceiver(r) {
+    let pos = this.receivers.indexOf(r);
+    if (pos > -1) {
+      this.receivers.splice(pos,)
+    }
   }
 
   reset() {
@@ -23,11 +41,12 @@ class Ticker {
     if (!this.playing) return;
     let diff = Date.now() - this.start;
     let tickCount = this.tickCount = ((diff*this.BPM*32)/60000)|0;
-    this.receiver.tick(this.tickCount);
+    this.receivers.forEach(r => r.tick(this.tickCount));
     setTimeout(() => this.tick(), 2);
   }
 
   play() {
+    this.receivers.forEach(r => r.tickStarted());
     this.tickCount = 0;
     this.playing = true;
     this.start = Date.now();
@@ -36,7 +55,18 @@ class Ticker {
 
   stop() {
     this.playing = false;
+    this.receivers.forEach(r => r.tickStopped());
   }
+};
+
+Ticker.getMaster = (receiver) => {
+  if (!Ticker.__master) {
+    Ticker.__master = new Ticker(120);
+  }
+  if (receiver) {
+    Ticker.__master.addReceiver(receiver);
+  }
+  return Ticker.__master;
 };
 
 export { Ticker };

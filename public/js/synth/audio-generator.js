@@ -1,10 +1,9 @@
 import { AudioSource } from './audio-source.js';
+import { context } from "../audio-context.js";
 
 class AudioGenerator {
 
-    constructor(context, lfoFrequency, lfoStrength) {
-        this.context = context;
-
+    constructor(lfoFrequency, lfoStrength) {
         if (lfoFrequency && lfoStrength) {
             this.lfoFrequency = lfoFrequency;
             this.lfoStrength = lfoStrength;
@@ -14,13 +13,13 @@ class AudioGenerator {
 
     setupLFO() {
         // set up the low frequency oscillator
-        let LFO = this.context.createOscillator();
+        let LFO = context.createOscillator();
         LFO.type = "sine";
         LFO.frequency.value = this.lfoFrequency;
         this.lfo = LFO;
 
         // and hook it up to its own gain
-        var LFOGain = this.context.createGain();
+        var LFOGain = context.createGain();
         LFOGain.gain.value = this.lfoStrength;
         this.lfoGain = LFOGain;
 
@@ -40,7 +39,7 @@ class AudioGenerator {
     }
 
     get(master, type, note) {
-        return new AudioSource(this.context, master, type, note, this.lfoGain);
+        return new AudioSource(master, type, note, this.lfoGain);
     }
 }
 

@@ -1,8 +1,8 @@
 import { h, render, Component } from '../preact.js';
-
 import { AudioGenerator } from "./audio-generator.js";
 import { DrawBar } from "./drawbar.js";
 import { router } from "../router/router.js";
+import { context } from "../audio-context.js";
 
 const offsets = [
     [-12, 0, 7, 12, 19, 26, 31, 38]
@@ -18,7 +18,7 @@ class DrawBars extends Component {
         router.addListener(this, "control");
         this.attack = 0.015;
         this.decay = 0.035;
-        this.generator = new AudioGenerator(this.props.context); // no LFO for now
+        this.generator = new AudioGenerator(context); // no LFO for now
         this.setupDrawBars();
     }
 
@@ -45,7 +45,7 @@ class DrawBars extends Component {
             { label: "harmony 4",  value: 0.0},
         ];
 
-        let normalizer = this.props.context.createGain();
+        let normalizer = context.createGain();
         normalizer.gain.value = 1 / definitions.length;
         normalizer.connect(this.props.out);
 
@@ -58,7 +58,6 @@ class DrawBars extends Component {
                 label={def.label}
                 value={def.value}
                 offset={tones[i]}
-                context={this.props.context}
                 out={normalizer}
                 generator={this.generator}
                 cc={16 + i}

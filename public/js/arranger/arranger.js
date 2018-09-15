@@ -3,11 +3,12 @@ import { router } from "../router/router.js";
 import { Pattern } from "./pattern.js";
 import { TonicStep } from "./tonic-step.js";
 import { ProgramPlayer } from "./program-player.js";
+import { sequencer as percussionTrack } from "../drumkit/drumkit.js";
 
 class Arranger extends Component {
     constructor(top) {
         super();
-        this.player = new ProgramPlayer(this, 120);
+        this.player = new ProgramPlayer(this, 135);
     }
 
     render() {
@@ -44,6 +45,7 @@ class Arranger extends Component {
     }
 
     demo() {
+        percussionTrack.demo();
         this.pattern.loadDemo();
     }
 

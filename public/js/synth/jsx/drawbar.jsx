@@ -1,6 +1,6 @@
 import { h, render, Component } from '../preact.js';
-
 import { Slider } from "./slider.js";
+import { context } from "../audio-context.js";
 
 /**
  *
@@ -10,7 +10,7 @@ class DrawBar extends Component {
     constructor(props) {
         super(props);
         this.generator = this.props.generator;
-        let volume = this.volume = this.props.context.createGain();
+        let volume = this.volume = context.createGain();
         volume.gain.value = this.props.value;
         volume.connect(this.props.out);
     }

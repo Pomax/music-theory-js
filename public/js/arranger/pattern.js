@@ -75,8 +75,14 @@ class Pattern extends Component {
 
     markStep(step) {
         let len = this.state.cells.length;
-        let pstep = (step + len - 1) % len;
-        this.state.cells[pstep].api.deactivate();
+        let pstep = (step + len + -1) % len;
+        try {
+            this.state.cells[pstep].api.deactivate();
+        } catch (e) {
+            this.stop();
+            console.log(step, len, pstep, this.state.cells);
+            this.arranger.stop();
+        }
         this.state.cells[step].api.activate();
     }
 }

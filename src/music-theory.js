@@ -1,3 +1,5 @@
+import { ifdebug } from "../public/js/if-debug.js";
+
 import { CHORDS } from "./chords.js";
 import { MODES } from "./modes.js";
 import { TONICS, TONIC_OFFSETS } from "./tonics.js";
@@ -163,7 +165,7 @@ class Element {
   setDuration(durationMilliseconds) { this.duration = durationMilliseconds; }
 }
 
-if (typeof window !== "undefined" && window.DEBUG) {
+ifdebug( () => {
   window.Element = Element;
 
   Element.prototype._play = function(duration=500) {
@@ -176,6 +178,6 @@ if (typeof window !== "undefined" && window.DEBUG) {
   }
 
   window.Theory = Theory;
-}
+});
 
 export { Theory, Element};
