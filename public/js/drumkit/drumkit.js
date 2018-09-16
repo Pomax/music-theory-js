@@ -1,6 +1,6 @@
 import { h, render, Component } from "../preact.js";
 import { MultiTrackSequencer } from "./multi-track-sequencer.js";
-import { instruments } from "./kit.js";
+import { instruments, levels } from "./kit.js";
 
 class Drumkit extends Component {
     constructor(props) {
@@ -40,16 +40,17 @@ class Drumkit extends Component {
         for (let i = 0; i < 32; i++) {
             if ([0, 3, 8, 9, 11, 16, 19, 24, 25, 27].indexOf(i) > -1) {
                 s.trigger(i, 'kick1');
+                s.trigger(i, 'kick4', levels[1]);
             }
             if ((i + 4) % 8 === 0) {
                 s.trigger(i, 'stick2');
-                s.trigger(i + 1, 'stick2', 0.2);
+                s.trigger(i + 1, 'stick2', levels[3]);
             }
             if ((i + 4) % 4 === 2) {
-                s.trigger(i, 'ride2', 0.5);
+                s.trigger(i, 'ride2', levels[2]);
             }
             if (i !== 7 && i !== 23) {
-                s.trigger(i, 'hihat2', 1 - i % 4 * 0.2);
+                s.trigger(i, 'hihat2', levels[i % 4]);
             } else {
                 s.trigger(i, 'hihat3');
                 s.interrupt(i + 1, 'hihat3');

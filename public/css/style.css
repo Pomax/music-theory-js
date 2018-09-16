@@ -411,8 +411,18 @@ button.pattern-add {
     cursor: pointer;
 }
 
+.multi-track-sequencer .track div.label .volume {
+    float:right;
+    cursor: pointer;
+    position: relative;
+    top: -4px;
+    color: #c2d4ef;
+}
+
 .multi-track-sequencer .track div.step {
     cursor: pointer;
+    position: relative;
+    user-select: none;
 }
 
 .multi-track-sequencer .track .step.play {

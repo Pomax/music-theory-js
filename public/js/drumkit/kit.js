@@ -1,6 +1,9 @@
 import { context, masterGain } from "../shared/audio-context.js";
 import { samples } from "../shared/samples.js";
 
+
+const VOLUMES = [1.0, 0.6, 0.35, 0.2, 0.1];
+
 class Sample {
     constructor() {
         this.loaded = false;
@@ -76,4 +79,4 @@ const drumkit = {
     crash2: loadSample(samples.crash[2]),
 }
 
-export { drumkit as instruments };
+export { drumkit as instruments, VOLUMES as levels };

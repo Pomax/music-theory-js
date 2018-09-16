@@ -1,6 +1,6 @@
 import { h, render, Component } from "../preact.js";
 import { context } from "../shared/audio-context.js";
-import { Knob } from "./knob.js";
+import { Slider } from "./slider.js";
 
 const DEFAULT_FREQUENCY = 3.0;
 const DEFAULT_STRENGTH = 1.5;
@@ -33,8 +33,8 @@ class LFO extends Component {
         return (
             <div class={'LFO' + bypass}>
                 <div className={'toggle'} onClick={e => this.toggleBypass()}></div>
-                <Knob disabled={bypass} cc={0} max={10} value={3.0} label="lfo freq" onInput={v => this.setFrequency(v)}/>
-                <Knob disabled={bypass} cc={0} max={10} value={3.0} label="lfo mix" onInput={v => this.setStrength(v)}/>
+                <Slider disabled={bypass} cc={0} max={10} value={3.0} label="lfo freq" onInput={v => this.setFrequency(v)}/>
+                <Slider disabled={bypass} cc={0} max={10} value={3.0} label="lfo mix" onInput={v => this.setStrength(v)}/>
             </div>
         );
     }
