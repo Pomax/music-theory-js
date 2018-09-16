@@ -2,10 +2,13 @@ import { h, render, Component } from "../preact.js";
 import { INTERVALS } from "../shared/intervals.js";
 import { Ticker } from "../shared/ticker.js";
 import { Track } from "./track.js";
+import { Slider } from "../shared/slider.js";
+import { context } from "../shared/audio-context.js";
 
 class MultiTrackSequencer extends Component {
     constructor(props) {
         super(props);
+
         let instruments = this.props.instruments;
         let stepCount = this.props.stepCount || 32;
         let ticksPerStep = this.props.ticksPerStep || INTERVALS['8'];
@@ -14,39 +17,26 @@ class MultiTrackSequencer extends Component {
         let tracks = this.tracks = [];
         this.namedTracks = {};
 
+        // master volume for all tracks
+        this.gainNode = context.createGain();
+        this.volume = h(Slider, { label: "volume", value: 1.0, onInput: v => this.gainNode.gain.value = v });
+
         Object.keys(instruments).map(name => {
-            let track = h(Track, { ref: e => track.api = e, name: name, instrument: instruments[name], stepCount: stepCount, ticksPerStep: ticksPerStep });
+            let track = h(Track, { ref: e => track.api = e, name: name, instrument: instruments[name], stepCount: stepCount, ticksPerStep: ticksPerStep, volume: this.gainNode });
             this.tracks.push(track);
             this.namedTracks[name] = track;
         });
 
-        this.state = {
-            tracks,
-            collapsed: true
-        };
+        this.state = { tracks };
     }
 
     render() {
         return h(
             "div",
-            null,
-            h(
-                "div",
-                { className: "multi-track-sequencer" + (this.state.collapsed ? " collapsed" : "") },
-                this.state.tracks
-            ),
-            h(
-                "div",
-                { className: "multi-track-sequencer-ui-toggle", onClick: evt => this.toggleUI() },
-                this.state.collapsed ? '▷' : '◁'
-            )
+            { className: "multi-track-sequencer" + (this.props.collapsed ? " collapsed" : "") },
+            this.volume,
+            this.state.tracks
         );
-    }
-
-    toggleUI() {
-        this.setState({
-            collapsed: !this.state.collapsed
-        });
     }
 
     getTrackNames() {

@@ -1,5 +1,6 @@
 import { h, render, Component } from "../preact.js";
 import { Ticker } from "../shared/ticker.js";
+import { levels } from "./kit.js";
 
 // step sequencer, 32 step by default
 class Track extends Component {
@@ -18,20 +19,42 @@ class Track extends Component {
     render() {
         return (
             <div className="track">
-                <div className="label" onClick={evt => this.preview()}>{ this.props.name }</div>
-                {
-                this.state.steps.map((step,i) => {
-                    let stepClass = [
-                        'step',
-                        this.state.playing === i ? ' active':'',
-                        this.getPlayStateClass(step)
-                    ].filter(v => v).join(' ');
-
-                    return <div className={stepClass} onClick={e => this.cycle(i)}> </div>;
-                })
-                }
+                <div className="label" onClick={evt => this.preview()}>
+                    { this.props.name }
+                    <span className="volume" onClick={evt => this.toggleVolume()}>{this.state.showVolume ? '⪡' : '♬'}</span>
+                </div>
+                { this.renderSteps() }
             </div>
         );
+    }
+
+    renderSteps() {
+        return this.state.steps.map((step,i) => {
+            let stepClass = [
+                'step',
+                this.state.playing === i ? ' active' : '',
+                this.getPlayStateClass(step),
+                this.state.showVolume ? 'volume' : ''
+            ].filter(v => v).join(' ');
+
+            const clickHandler = this.state.showVolume ? e => this.cycleVolume(i) : e => this.cycle(i);
+
+            let label = '';
+            if (step && this.state.showVolume) {
+                if (step.volume === levels[0]) label = '5';
+                if (step.volume === levels[1]) label = '4';
+                if (step.volume === levels[2]) label = '3';
+                if (step.volume === levels[3]) label = '2';
+                if (step.volume === levels[4]) label = '1';
+            }
+            return <div className={stepClass} onClick={clickHandler}>{ label }</div>;
+        });
+    }
+
+    toggleVolume() {
+        this.setState({
+            showVolume: !this.state.showVolume
+        });
     }
 
     getPlayStateClass(step) {
@@ -65,7 +88,7 @@ class Track extends Component {
     }
 
     preview() {
-        this.props.instrument.play(1.0);
+        this.props.instrument.play(1.0, this.props.volume);
     }
 
     playInstrument(instruction) {
@@ -73,7 +96,7 @@ class Track extends Component {
         if (instruction.interrupt) {
             instrument.interrupt();
         }
-        instrument.play(instruction.volume);
+        instrument.play(instruction.volume, this.props.volume);
     }
 
     playStep(step) {
@@ -108,6 +131,18 @@ class Track extends Component {
         this.updateSteps();
     }
 
+    cycleVolume(step) {
+        let e = this.steps[step];
+        // there has to be a step before we can cycle volume
+        if (!e) { return; }
+        if (e.volume === levels[4]) e.volume = levels[0];
+        else if (e.volume === levels[3]) e.volume = levels[4];
+        else if (e.volume === levels[2]) e.volume = levels[3];
+        else if (e.volume === levels[1]) e.volume = levels[2];
+        else if (e.volume === levels[0]) e.volume = levels[1];
+        this.updateSteps();
+    }
+
     trigger(step, volume=1.0, interrupt=false) {
         this.steps[step] = { volume, interrupt };
         this.updateSteps();
@@ -124,7 +159,7 @@ class Track extends Component {
             return (this.steps[step] = EMPTY);
         }
         // if this was called as off(), clear ALL instruction.
-        this.steps = [...new Array(stepCount)];
+        this.steps = [...new Array(this.stepCount)];
         this.updateSteps();
     }
 

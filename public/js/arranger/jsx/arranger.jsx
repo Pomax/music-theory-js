@@ -3,7 +3,7 @@ import { router } from "../router/router.js";
 import { Pattern } from "./pattern.js";
 import { TonicStep } from "./tonic-step.js";
 import { ProgramPlayer } from "./program-player.js";
-import { sequencer } from "../drumkit/drumkit.js";
+import { Drumkit } from "../drumkit/drumkit.js";
 
 class Arranger extends Component {
     constructor(top) {
@@ -25,6 +25,7 @@ class Arranger extends Component {
                     </label>
                     <button onClick={evt => this.demo()}>demo</button>
                 </div>
+                <Drumkit ref={e => (this.drumkit=e)}/>
             </div>
             );
     }
@@ -34,7 +35,7 @@ class Arranger extends Component {
     }
 
     demo() {
-        sequencer.demo();
+        this.drumkit.demo();
         this.pattern.loadDemo();
     }
 

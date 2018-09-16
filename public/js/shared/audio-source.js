@@ -1,7 +1,6 @@
 import { getFrequency } from "./get-frequency.js";
 import { context } from "./audio-context.js";
 
-
 class AudioSource {
     constructor(master, type, note, lfoGain) {
         this.master = master;
@@ -12,6 +11,10 @@ class AudioSource {
         var oscillator = this.oscillator = context.createOscillator();
         oscillator.type = type;
         oscillator.frequency.setValueAtTime(getFrequency(note), context.currentTime);
+
+        if (AudioSource.globalLFO) {
+            AudioSource.globalLFO.connect(oscillator.frequency);
+        }
 
         // we use a gain to control attack/decay
         var volume = this.volume = context.createGain();
@@ -45,5 +48,12 @@ class AudioSource {
 }
 
 AudioSource.sourceList = [];
+
+AudioSource.setGlobalLFO = (lfo) => {
+    AudioSource.globalLFO = lfo;
+    AudioSource.sourceList.forEach(oscillator => {
+        lfo.connect(oscillator.frequency);
+    });
+}
 
 export { AudioSource };
