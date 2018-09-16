@@ -67,7 +67,7 @@ class Track extends Component {
     }
 
     preview() {
-        this.props.instrument.play(1.0);
+        this.props.instrument.play(1.0, this.props.volume);
     }
 
     playInstrument(instruction) {
@@ -75,7 +75,7 @@ class Track extends Component {
         if (instruction.interrupt) {
             instrument.interrupt();
         }
-        instrument.play(instruction.volume);
+        instrument.play(instruction.volume, this.props.volume);
     }
 
     playStep(step) {
@@ -124,7 +124,7 @@ class Track extends Component {
             return this.steps[step] = EMPTY;
         }
         // if this was called as off(), clear ALL instruction.
-        this.steps = [...new Array(stepCount)];
+        this.steps = [...new Array(this.stepCount)];
         this.updateSteps();
     }
 

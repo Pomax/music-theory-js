@@ -3,9 +3,11 @@ import { h, render } from '../preact.js';
 import { Keyboard } from "./keyboard.js";
 import { DrawBars } from "./drawbars.js";
 import { code } from "../shared/midi-codes.js";
-import { LabelBar } from "./label-bar.js";
 import { router } from "../router/router.js";
-import { context, masterGain } from "../shared/audio-context.js";
+import { Slider } from "../shared/slider.js";
+import { LFO } from "../shared/lfo.js";
+import { masterGain } from "../shared/audio-context.js";
+import { AudioSource } from "../shared/audio-source.js";
 
 const volumeCode = code('Volume (coarse)');
 
@@ -17,37 +19,28 @@ class Synth {
   constructor(top, startVolume) {
     router.addListener(this, "noteon");
     router.addListener(this, "noteoff");
-    router.addListener(this, "control");
 
     // master volume control
-    let master = this.masterVolume = {
-      node: masterGain,
-      value: startVolume || 0.5,
+    masterGain.gain.value = startVolume||0.5;
+    let master = h(Slider,{
+      ref: e => (master.api=e),
       label: "volume",
-      setValue: v => {
-        this.masterVolume.node.gain = v;
+      value: masterGain.gain.value,
+      onInput: v => (masterGain.gain.value = v),
+      cc: volumeCode
+    });
+    render(master, top);
+
+    // set up an LFO, which we can use either
+    // globally, or as LFO modulator for
+    // each individual oscillator used.
+    render(h(LFO, {
+      ref: e => {
+        let lfo = e.getOutput();
+        AudioSource.setGlobalLFO(lfo);
       }
-    };
-    masterGain.gain.value = master.value;
+    }), top);
 
-    // Right now we only have one {CC => control}
-    // binding, but we still need a controller
-    // for attack, delay, LFO frequency, and LFO
-    // strength.
-    this.controllers = [];
-
-    // Add the master volume to the controller list.
-    this.controllers[volumeCode] = this.masterVolume;
-    this.masterVolume.ui = new LabelBar(
-      {
-        list: this.controllers,
-        onSetValue: (bar, value) => {
-          this.masterVolume.node.gain.value = value;
-        }
-      },
-      this.masterVolume,
-      top
-    );
 
     // active audio source tracking
     this.generators = {};
@@ -61,7 +54,9 @@ class Synth {
     }), top);
 
     // keyboard visualisation
-    this.keyboard = new Keyboard(top);
+    render(h(Keyboard, {
+      ref: e => (this.keyboard = e)
+    }), top);
   }
 
   onNoteOn(note, velocity) {
@@ -85,17 +80,6 @@ class Synth {
     if (active) {
       active.stop();
       this.generators[note] = false;
-    }
-  }
-
-  onControl(controller, value) {
-    this.handleController(controller, value);
-  }
-
-  handleController(controller, value) {
-    let cc = this.controllers[controller];
-    if (cc) {
-      cc.setValue(value/127);
     }
   }
 }

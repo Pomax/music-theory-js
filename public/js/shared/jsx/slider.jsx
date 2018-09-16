@@ -11,13 +11,14 @@ class Slider extends Component {
         this.state = {
             cc: this.props.cc,
             value: this.props.value,
-            fidelity: 1000
+            fidelity: 1000,
+            className: "slider"
         };
     }
 
     onControl(cc, value) {
         if(cc === this.state.cc) {
-            value = value / 127;
+            value = (this.props.max||1) * value / 127;
             this.setState({ value });
             this.props.onInput(value);
         }
@@ -25,12 +26,16 @@ class Slider extends Component {
 
     render() {
         return (
-            <div className="slider">
-                <label onClick={evt => this.learnCC()}>{ this.props.label }</label>
+            <div className={this.state.className}>
+                <label onClick={evt => {
+                    if (this.props.disabled) return;
+                    this.learnCC();
+                }}>{ this.props.label }</label>
                 <input
+                  disabled={this.props.disabled}
                   type="range"
-                  min="0"
-                  max={this.state.fidelity}
+                  min={this.props.min || 0}
+                  max={this.state.fidelity * (this.props.max || 1)}
                   step="1"
                   value={this.state.value * this.state.fidelity}
                   onInput={evt => this.handleInput(evt)}

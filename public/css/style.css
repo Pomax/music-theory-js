@@ -90,7 +90,7 @@ body {
     display: inline-block;
 }
 
-#synth label {
+.slider label, .knob label {
     font-family: sans-serif;
     font-variant: small-caps;
     text-align: center;
@@ -112,6 +112,9 @@ body {
     padding: 0;
     vertical-align: top;
     box-shadow: 5px 5px 0 #544c4c66;
+    line-height: calc(9em - 1px);
+    color: #ffffffb0;
+    text-shadow: 0px 0px 0px black;
 }
 
 .key.white {
@@ -302,11 +305,15 @@ body {
     text-shadow: 1px 1px 0 black;
 }
 
-#arranger button {
+#arranger button, .octave button {
     background: orange;
     border: 1px solid black;
-    margin: 2px;
     margin: 2px auto 0;
+}
+
+#arranger button:active,
+.octave button:active {
+    background: rgb(206, 99, 12);
 }
 
 button.pattern-add {
@@ -337,16 +344,15 @@ button.pattern-add {
     box-shadow: -2px 0 0 0 black;
 }
 
-#drumkit {
+.drumkit {
     z-index: 3;
     background: #428ad2;
     display: inline-block;
-    height: 16em;
     padding: 5px;
-    position: relative;
+    position: absolute;
     top: 2em;
     border-radius: 0 0.5em 0.5em 0;
-    left: 0.5em;
+    left: calc(100% + 1px);
     box-shadow: 11px 11px 3px 1px #ffbf81;
 }
 
@@ -368,12 +374,12 @@ button.pattern-add {
     width: calc(1em + 1px);
     position: absolute;
     top: 0;
-    right: 0;
+    right: -0.5em;
     bottom: 0;
     border-radius: 0 10px 10px 0;
     box-shadow: 11px 11px 3px 1px #ffbf81;
     border-left: 1px dotted orange;
-    cursor:pointer;
+    cursor: pointer;
     line-height: 16;
     color: #ccc;
     text-shadow: 1px 1px 1px black;
@@ -395,7 +401,6 @@ button.pattern-add {
     width: 1em;
     height: 1em;
     border-color: transparent;
-    transition: background 0.2s, border-color 0.2s;
     user-select: none;
 }
 
@@ -438,4 +443,49 @@ button.pattern-add {
 
 .multi-track-sequencer .track > div + div {
     border-left: 1px solid rgba(255,255,255,0.3);
+}
+
+.LFO {
+    width: 90%;
+    margin: auto;
+    box-shadow: -1px -1px 1px -1px black, 1px 1px 1px -1px white;
+    z-index: 3;
+    position: relative;
+    margin-top: 0.2em;
+    background: hsla(206, 84%, 42%, 1);
+}
+
+.LFO.bypass {
+    opacity: 0.5;
+}
+
+.LFO .toggle {
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    background: #5df80a;
+    box-shadow: -1px -1px 1px 0px white, 1px 1px 1px 1px black;
+    border-radius: 1em;
+    top: 3px;
+    left: 3px;
+    cursor: pointer;
+}
+
+.LFO.bypass .toggle {
+    background: red;
+}
+
+.board .octave {
+    position: absolute;
+    right: 5em;
+    top: 0.51em;
+    width: 1.5em;
+}
+
+.board .octave button {
+    width: 100%;
+}
+
+.board .octave button:last-child {
+    border-radius: 0 0 0.25em 0;
 }

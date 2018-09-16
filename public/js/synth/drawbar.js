@@ -1,5 +1,5 @@
 import { h, render, Component } from '../preact.js';
-import { Slider } from "./slider.js";
+import { Slider } from "../shared/slider.js";
 import { context } from "../shared/audio-context.js";
 
 /**

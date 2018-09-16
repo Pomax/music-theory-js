@@ -36,7 +36,7 @@ class FFT extends Component {
 
         let values = data.map((value, i) => {
             let x = i * bar + bar / 2;
-            return h("rect", { x: x, y: 0, width: bar, height: value * height / 255 });
+            return h("rect", { x: x, y: 0, width: bar, height: value / 255 * height });
         });
 
         return h(
