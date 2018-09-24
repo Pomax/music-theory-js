@@ -34,7 +34,7 @@ class Step extends Component {
     }
 
     render() {
-        let topClasses = ["cell", this.state.active? 'active' : ''].join(' ');
+        let topClasses = ["step", this.state.active? 'active' : ''].join(' ');
         let noteClasses = ["note-info", this.state.listening ? 'assign' : ''].join(' ');
         let label = this.state.note ? `${this.state.note}-${this.state.velocity}` : '-';
 
@@ -42,7 +42,7 @@ class Step extends Component {
             <div className={topClasses}>
                 <div className={noteClasses} onClick={ evt => this.assignNote(evt)}>{ label }</div>
                 { this.renderSelectors() }
-                <button className="cell-clear" onClick={evt => this.delete()}>X</button>
+                <button className="step-clear" onClick={evt => this.delete()}>X</button>
             </div>
         );
     }

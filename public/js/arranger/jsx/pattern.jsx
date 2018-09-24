@@ -8,85 +8,82 @@ class Pattern extends Component {
     constructor(props) {
         super(props);
         this.arranger = this.props.arranger;
-        this.state = { cells: [] };
+        this.state = { steps: [] };
     }
 
     render() {
         return (
-            <div>
-                <div className="cells">
-                    { this.state.cells }
-                </div>
-                <button className="pattern-add" onClick={evt => this.newCell()}>+</button>
+            <div className="pattern">
+                <div className="steps">{ this.state.steps }</div>
+                <button className="pattern-add" onClick={evt => this.newStep()}>+</button>
             </div>
         );
     }
 
-    newCell(options) {
-        let cells = this.state.cells;
-        let cell = this.buildCellComponent(options);
-        cells.push(cell);
-        this.setState({ cells });
+    newStep(options) {
+        let steps = this.state.steps;
+        let step = this.buildStepComponent(options);
+        steps.push(step);
+        this.setState({ steps });
     }
 
-    buildCellComponent(options) {
+    buildStepComponent(options) {
         let StepType = this.props.steptype;
-        let cell = <StepType
-            ref={e => (cell.api=e)}
+        let step = <StepType
+            ref={e => (step.api=e)}
             owner={this}
-            onChange={evt => this.handleCellUpdate()}
-            onDelete={evt => this.deleteCell(cell)}
+            onChange={evt => this.handleStepUpdate()}
+            onDelete={evt => this.deleteStep(step)}
             {...options}
         />;
-        return cell;
+        return step;
     }
 
-    deleteCell(cell) {
-        let cells = this.state.cells;
-        let pos = cells.indexOf(cell);
+    deleteStep(step) {
+        let steps = this.state.steps;
+        let pos = steps.indexOf(step);
         if (pos > -1) {
-            cells.splice(pos,1);
+            steps.splice(pos,1);
         }
-        this.setState({ cells });
+        this.setState({ steps });
     }
 
     stop() {
-        this.state.cells.forEach(cell => cell.api.deactivate());
+        this.state.steps.forEach(step => step.api.deactivate());
     }
 
     loadDemo() {
-        let _c = o => this.buildCellComponent(o);
+        let _c = o => this.buildStepComponent(o);
         let note = Theory.nameToNumber('C4');
-        let cells = [
+        let steps = [
             _c({ note, velocity:50, chord:'major', tonic: 'I',  inversion: -1, octave:  0, duration: '1' }),
             _c({ note: false, velocity: 0, chord: '', tonic: 'VI', inversion:  0, octave: -1, duration: '1' }),
             _c({ note: false, velocity: 0, chord: '', tonic: 'i',  inversion: -1, octave:  0, duration: '1' }),
             _c({ note: false, velocity: 0, chord: '', tonic: 'ii', inversion: -1, octave:  0, duration: '2' }),
             _c({ note: false, velocity: 0, chord: '', tonic: 'II', inversion:  0, octave:  0, duration: '2' })
         ];
-        this.setState({ cells });
+        this.setState({ steps });
     }
 
-    handleCellUpdate(cell, step) {
+    handleStepUpdate() {
         let program = this.buildProgram();
         this.arranger.updateProgram(program);
     }
 
     buildProgram() {
-        return this.state.cells.map(cell => cell.api.getStep());
+        return this.state.steps.map(step => step.api.getStep());
     }
 
     markStep(step) {
-        let len = this.state.cells.length;
+        let len = this.state.steps.length;
         let pstep = (step + len + - 1) % len;
         try {
-            this.state.cells[pstep].api.deactivate();
+            this.state.steps[pstep].api.deactivate();
         } catch (e) {
             this.stop();
-            console.log(step, len, pstep, this.state.cells);
             this.arranger.stop();
         }
-        this.state.cells[step].api.activate();
+        this.state.steps[step].api.activate();
     }
 }
 

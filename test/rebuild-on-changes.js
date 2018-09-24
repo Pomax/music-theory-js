@@ -52,27 +52,32 @@ function monitor(watcher, scripts) {
  * Watch for code changes
  */
 monitor(
-  chokidar.watch([ 'src/**/*.js' ], { ignored: [] }),
+  chokidar.watch([ 'src/**/*.js' ]),
   rebuildScripts
 );
 
 //
 monitor(
-  chokidar.watch(['public/js/arranger/jsx/*.jsx'], { ignored: [] }),
+  chokidar.watch(['public/js/arranger/jsx/*.jsx']),
   ['babel:arranger']
 )
 
 monitor(
-  chokidar.watch(['public/js/synth/jsx/*.jsx'], { ignored: [] }),
+  chokidar.watch(['public/js/synth/jsx/*.jsx']),
   ['babel:synth']
 )
 
 monitor(
-  chokidar.watch(['public/js/drumkit/jsx/*.jsx'], { ignored: [] }),
+  chokidar.watch(['public/js/drumkit/jsx/*.jsx']),
   ['babel:drumkit']
 )
 
 monitor(
-  chokidar.watch(['public/js/shared/jsx/*.jsx'], { ignored: [] }),
+  chokidar.watch(['public/js/shared/jsx/*.jsx']),
   ['babel:shared']
+)
+
+monitor(
+  chokidar.watch(['public/css/sass/*.scss']),
+  ['css']
 )

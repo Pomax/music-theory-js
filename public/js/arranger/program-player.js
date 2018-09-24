@@ -1,5 +1,6 @@
 import { Ticker } from "../shared/ticker.js";
 import { INTERVALS } from "../shared/intervals.js";
+import { Element } from "../theory.js";
 
 /**
  *

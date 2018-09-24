@@ -1,26 +1,35 @@
 .hidden {
-  display: none !important; }
+  display: none !important;
+}
 
 html {
-  background: rgba(255, 166, 0, 0.103); }
+  background: rgba(255, 166, 0, 0.103);
+}
 
 body {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-direction: column; }
+  flex-direction: column;
+}
 
 .screenshot {
   opacity: 0.4;
-  margin-bottom: -1em; }
-  .screenshot .hidden {
+  margin-bottom: -1em;
+
+  .hidden {
     display: none;
-    margin-bottom: 0; }
+    margin-bottom: 0;
+  }
+}
 
 #components {
-  display: flex; }
-  #components.uninitialized {
-    display: none; }
+  display: flex;
+
+  &.uninitialized {
+    display: none;
+  }
+}
 
 #synth {
   display: inline-block;
@@ -35,12 +44,14 @@ body {
   align-self: center;
   justify-self: center;
   flex: 1 1 auto;
-  z-index: 1; }
+  z-index: 1;
+}
 
 #device {
   display: inline-block;
-  padding: 0 2em 1em; }
-  #device.led {
+  padding: 0 2em 1em;
+
+  &.led {
     position: absolute;
     bottom: 2em;
     left: 1em;
@@ -51,9 +62,13 @@ body {
     background: red;
     border-radius: 10px;
     z-index: 2;
-    box-shadow: 1px 0px 4px inset #ffffffe6, 1px 1px 3px #000c; }
-    #device.led.live {
-      background: #4ed209; }
+    box-shadow: 1px 0px 4px inset #ffffffe6, 1px 1px 3px #000c;
+
+    &.live {
+      background: #4ed209;
+    }
+  }
+}
 
 .lfo-info {
   font-variant: small-caps;
@@ -65,12 +80,15 @@ body {
   margin: 0;
   padding: 0.25em;
   font-weight: bold;
-  text-shadow: 1px 1px 0 #ff8181; }
-  .lfo-info span {
+  text-shadow: 1px 1px 0 #ff8181;
+
+  span {
     border: 1px inset rgba(255, 255, 255, 0.9);
     padding: 0 3px;
     width: 2.5em;
-    display: inline-block; }
+    display: inline-block;
+  }
+}
 
 .slider label,
 .knob label {
@@ -84,7 +102,8 @@ body {
   color: white;
   font-weight: bold;
   text-shadow: 1px 1px 0 black;
-  border-radius: 1em 0 0 0; }
+  border-radius: 1em 0 0 0;
+}
 
 .key {
   display: inline-block;
@@ -96,20 +115,29 @@ body {
   box-shadow: 5px 5px 0 #544c4c66;
   line-height: calc(9em - 1px);
   color: #ffffffb0;
-  text-shadow: 0px 0px 0px black; }
-  .key.white {
-    background: white; }
-  .key.black {
+  text-shadow: 0px 0px 0px black;
+
+  &.white {
+    background: white;
+  }
+
+  &.black {
     background: black;
     margin-left: calc(-0.5em - 1px);
     height: 4em;
     position: relative;
     z-index: 1;
-    box-shadow: none; }
-    .key.black + .key.white {
-      margin-left: -0.5em; }
-  .key.pressed {
-    background: #00ff42; }
+    box-shadow: none;
+
+    & + .key.white {
+      margin-left: -0.5em;
+    }
+  }
+
+  &.pressed {
+    background: #00ff42;
+  }
+}
 
 .drawbars {
   transform: translate(1em, 0em) rotate(90deg);
@@ -118,7 +146,8 @@ body {
   height: 18em;
   display: flex;
   flex-direction: column-reverse;
-  justify-content: center; }
+  justify-content: center;
+}
 
 .board {
   box-shadow: 0px -1px 13px inset #000;
@@ -128,24 +157,32 @@ body {
   position: relative;
   left: -25%;
   text-align: left;
-  text-indent: calc(25% + 2.5em); }
-  .board .octave {
+  text-indent: calc(25% + 2.5em);
+
+  .octave {
     position: absolute;
     right: 5em;
     top: 0.51em;
     width: 1.5em;
-    text-indent: 0; }
-    .board .octave button {
-      width: 100%; }
-      .board .octave button:last-child {
-        border-radius: 0 0 0.25em 0; }
+    text-indent: 0;
+
+    button {
+      width: 100%;
+
+      &:last-child {
+        border-radius: 0 0 0.25em 0;
+      }
+    }
+  }
+}
 
 .notice {
   width: 600px;
   margin: auto;
   text-align: justify;
   font-family: sans-serif;
-  margin: 2em; }
+  margin: 2em;
+}
 
 #arranger {
   position: relative;
@@ -157,7 +194,8 @@ body {
   border-radius: 0 1.5em 1.5em 0;
   height: 22em;
   box-shadow: 11px 11px 3px 1px #ffbf81;
-  margin-left: 0.5em; }
+  margin-left: 0.5em;
+}
 
 #fft {
   position: absolute;
@@ -166,43 +204,61 @@ body {
   bottom: 4em;
   opacity: 0.6;
   padding: 0 3px;
-  border-bottom: 1px solid orange; }
-  #fft svg {
+  border-bottom: 1px solid orange;
+
+  svg {
     width: 100%;
-    height: auto; }
-    #fft svg rect {
+    height: auto;
+
+    rect {
       fill: #428ad2;
-      stroke: #ffbf81; }
+      stroke: #ffbf81;
+    }
+  }
+}
 
 .pattern {
   overflow-y: auto;
-  height: calc(100% - 3em); }
-  .pattern .steps {
+  height: calc(100% - 3em);
+
+  .steps {
     position: relative;
     z-index: 1;
     display: flex;
     flex-flow: column wrap;
     align-content: space-around;
-    width: 100%; }
-    .pattern .steps .step {
+    width: 100%;
+
+    .step {
       display: flex;
       flex-direction: row;
       justify-content: flex-end;
       width: 100%;
       height: calc(100% / 17);
-      background: #ffe6c0;
+      background: rgb(255, 230, 192);
       font-family: monospace;
       font-size: 90%;
       box-shadow: 4px 0px 0px 0px #ffbf81;
-      overflow: hidden; }
-      .pattern .steps .step select {
-        background: inherit; }
-      .pattern .steps .step + .step {
-        border-top: 1px solid rgba(0, 0, 0, 0.5); }
-      .pattern .steps .step:nth-child(17) {
-        border-radius: 0 0.75em 0 0; }
-      .pattern .steps .step.active {
-        background: #f3a46f; }
+      overflow: hidden;
+
+      select {
+        background: inherit;
+      }
+
+      & + .step {
+        border-top: 1px solid rgba(0, 0, 0, 0.5);
+      }
+
+      &:nth-child(17) {
+        border-radius: 0 0.75em 0 0;
+      }
+
+      &.active {
+        background: rgb(243, 164, 111);
+      }
+    }
+  }
+}
 
 .note-info {
   display: inline-block;
@@ -211,18 +267,25 @@ body {
   color: white;
   text-shadow: 1px 1px 0 black;
   padding-top: 2px;
-  text-align: center; }
+  text-align: center;
 
-@keyframes wait-for-input {
-  0% {
-    background-color: #080; }
-  50% {
-    background-color: #0f0; }
-  100% {
-    background-color: #080; } }
-  .note-info .assign {
+  @keyframes wait-for-input {
+    0% {
+      background-color: #080;
+    }
+    50% {
+      background-color: #0f0;
+    }
+    100% {
+      background-color: #080;
+    }
+  }
+
+  .assign {
     animation: wait-for-input 2s ease-in-out 0s infinite;
-    transition: background-color; }
+    transition: background-color;
+  }
+}
 
 .step-clear {
   float: right;
@@ -236,7 +299,8 @@ body {
   border: none;
   text-shadow: 1px 1px 0 white;
   color: #b46624;
-  cursor: pointer; }
+  cursor: pointer;
+}
 
 .controls {
   position: absolute;
@@ -245,26 +309,33 @@ body {
   transform: translate(-50%, 0);
   width: 100%;
   text-align: center;
-  z-index: 1; }
-  .controls label {
+  z-index: 1;
+
+  label {
     font-family: sans-serif;
     font-size: 1.1em;
     font-weight: bold;
     text-shadow: 1px 1px 0 black, -1px -1px 0 white;
     color: #46a1f9;
     vertical-align: -2px;
-    margin: auto 1em; }
-  .controls .keyboard {
+    margin: auto 1em;
+  }
+
+  .keyboard {
     background: #f00;
     display: inline-block;
     width: 0.5em;
     height: 0.5em;
     border-radius: 1em;
     box-shadow: -1px -1px 1px 0 white, 1px 1px 3px 0 black;
-    margin-right: -0.5em; }
-    .controls .keyboard.ON {
-      background: #4ed209; }
-  .controls input[type="number"] {
+    margin-right: -0.5em;
+
+    &.ON {
+      background: #4ed209;
+    }
+  }
+
+  input[type="number"] {
     width: 3em;
     font-family: monospace;
     border: none;
@@ -275,40 +346,51 @@ body {
     background: #5e9ddb;
     color: white;
     font-weight: bold;
-    text-shadow: 1px 1px 0 black; }
-  .controls button .stop {
-    display: block;
-    position: relative;
-    width: 10px;
-    height: 10px;
-    background: black;
-    margin: 3px 0; }
-  .controls button .play {
-    display: block;
-    position: relative;
-    left: 3px;
-    width: 10px;
-    height: 10px;
-    box-sizing: border-box;
-    border: 5px solid transparent;
-    border-left: 5px solid black;
-    margin: 3px 0;
-    box-shadow: -2px 0 0 0 black; }
+    text-shadow: 1px 1px 0 black;
+  }
+
+  button {
+    .stop {
+      display: block;
+      position: relative;
+      width: 10px;
+      height: 10px;
+      background: black;
+      margin: 3px 0;
+    }
+
+    .play {
+      display: block;
+      position: relative;
+      left: 3px;
+      width: 10px;
+      height: 10px;
+      box-sizing: border-box;
+      border: 5px solid transparent;
+      border-left: 5px solid black;
+      margin: 3px 0;
+      box-shadow: -2px 0 0 0 black;
+    }
+  }
+}
 
 #arranger button,
 .octave button {
   background: orange;
   border: 1px solid black;
-  margin: 2px auto 0; }
+  margin: 2px auto 0;
+}
 
 #arranger button:active,
 .octave button:active {
-  background: #ce630c; }
+  background: rgb(206, 99, 12);
+}
 
 button.pattern-add {
   width: 2em;
   display: block;
-  margin-top: 1em; }
+  margin-top: 1em;
+}
 
 .drumkit {
   z-index: 3;
@@ -319,66 +401,90 @@ button.pattern-add {
   top: 2em;
   border-radius: 0 0.5em 0.5em 0;
   left: calc(100% + 1px);
-  box-shadow: 11px 11px 3px 1px #ffbf81; }
+  box-shadow: 11px 11px 3px 1px #ffbf81;
+}
 
 .multi-track-sequencer {
   display: flex;
   flex-direction: column;
   font-family: sans-serif;
-  margin-right: 1em; }
-  .multi-track-sequencer.collapsed {
+  margin-right: 1em;
+
+  &.collapsed {
     width: 0em;
     margin-right: 0;
-    overflow: hidden; }
-  .multi-track-sequencer .track {
+    overflow: hidden;
+  }
+
+  .track {
     background: transparent;
     height: 1em;
     text-align: center;
     color: white;
     display: block;
     white-space: nowrap;
-    border-bottom: 1px solid #ffffff75; }
-    .multi-track-sequencer .track > div + div {
-      border-left: 1px solid rgba(255, 255, 255, 0.3); }
-    .multi-track-sequencer .track div {
+    border-bottom: 1px solid #ffffff75;
+
+    & > div + div {
+      border-left: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    div {
       display: inline-block;
       width: 1em;
       height: 1em;
       border-color: transparent;
-      user-select: none; }
-      .multi-track-sequencer .track div .active {
-        background: rgba(255, 255, 255, 0.5); }
-      .multi-track-sequencer .track div.step {
+      user-select: none;
+
+      .active {
+        background: rgba(255, 255, 255, 0.5);
+      }
+
+      &.step {
         cursor: pointer;
         position: relative;
-        user-select: none; }
-        .multi-track-sequencer .track div.step.play {
-          background: #16cc25; }
-        .multi-track-sequencer .track div.step.cut {
+        user-select: none;
+
+        &.play {
+          background: #16cc25;
+        }
+
+        &.cut {
           background: transparent;
           border: 0.5em solid red;
           box-sizing: border-box;
           border-right-color: transparent;
           border-bottom-color: transparent;
-          margin-left: 1px; }
-        .multi-track-sequencer .track div.step.cut-and-play {
+          margin-left: 1px;
+        }
+
+        &.cut-and-play {
           background: red;
           border: 0.5em solid #16cc25;
           box-sizing: border-box;
           border-left-color: transparent;
           border-top-color: transparent;
-          margin-left: 1px; }
-      .multi-track-sequencer .track div.label {
+          margin-left: 1px;
+        }
+      }
+
+      &.label {
         width: 4em;
         text-align: left;
         user-select: none;
-        cursor: pointer; }
-        .multi-track-sequencer .track div.label .volume {
+        cursor: pointer;
+
+        .volume {
           float: right;
           cursor: pointer;
           position: relative;
           top: -4px;
-          color: #c2d4ef; }
+          color: #c2d4ef;
+        }
+      }
+    }
+  }
+}
 
 .multi-track-sequencer-ui-toggle {
   background: #928c7e;
@@ -394,7 +500,8 @@ button.pattern-add {
   line-height: 16;
   color: #ccc;
   text-shadow: 1px 1px 1px black;
-  font-weight: bold; }
+  font-weight: bold;
+}
 
 .LFO {
   width: 90%;
@@ -403,12 +510,17 @@ button.pattern-add {
   z-index: 3;
   position: relative;
   margin-top: 0.2em;
-  background: #1177c5; }
-  .LFO.bypass {
-    opacity: 0.5; }
-    .LFO.bypass .toggle {
-      background: red; }
-  .LFO .toggle {
+  background: hsla(206, 84%, 42%, 1);
+
+  &.bypass {
+    opacity: 0.5;
+
+    .toggle {
+      background: red;
+    }
+  }
+
+  .toggle {
     position: absolute;
     width: 7px;
     height: 7px;
@@ -417,4 +529,6 @@ button.pattern-add {
     border-radius: 1em;
     top: 3px;
     left: 3px;
-    cursor: pointer; }
+    cursor: pointer;
+  }
+}

@@ -1,8 +1,6 @@
-import { h, render } from "./preact.js";
 import { masterGain } from "./shared/audio-context.js";
 import { router } from "./router/router.js";
 import { Synth } from "./synth/synth.js";
-import { FFT } from "./shared/fft.svg.js";
 import { setupArranger } from "./arranger/arranger.js";
 
 const device = document.getElementById('device');
@@ -12,8 +10,6 @@ function loadSynth(withMIDI) {
     new Synth(document.getElementById('synth'), 1);
     // and the chord arranger,
     setupArranger(document.getElementById('arranger'));
-    // and an FFT visualiser, using SVG instead of canvas,
-    render(h(FFT, { source: masterGain, refresh: 20}), document.getElementById('fft'));
     // and if we've not crashed by noew, we swap out the static img for the actual UI:
     document.getElementById('components').classList.remove('uninitialized');
     document.querySelector('.screenshot').classList.add('hidden');

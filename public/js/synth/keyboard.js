@@ -102,12 +102,10 @@ class Keyboard extends Component {
         );
     }
 
-    changeOctave(direction) {
-        if (direction < 0 && this.low > 11) {
-            this.low -= 12;
-        } else if (this.low <= 108) {
-            this.low += 12;
-        }
+    changeOctave(delta) {
+        this.low += delta * 12;
+        if (this.low < 0) this.low = 0;
+        if (this.low > 108) this.low = 108;
         this.setKeySlice();
     }
 
