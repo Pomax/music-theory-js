@@ -54,6 +54,9 @@ class MIDIRouter {
     noteon(channel, data) {
         var note = data[0];
         var velocity = data[1];
+        if (velocity === 0) {
+            return this.signalnoteoff(channel, note, velocity);
+        }
         this.signalnoteon(channel, note, velocity);
     }
 

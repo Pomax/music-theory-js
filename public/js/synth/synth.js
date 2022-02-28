@@ -1,4 +1,4 @@
-import { h, render } from '../preact.js';
+import { h, render } from "../preact.js";
 
 import { Keyboard } from "./keyboard.js";
 import { DrawBars } from "./drawbars.js";
@@ -9,38 +9,39 @@ import { LFO } from "../shared/lfo.js";
 import { masterGain } from "../shared/audio-context.js";
 import { AudioSource } from "../shared/audio-source.js";
 
-const volumeCode = code('Volume (coarse)');
+const volumeCode = code("Volume (coarse)");
 
 /**
  *
  */
 class Synth {
-
   constructor(top, startVolume) {
     router.addListener(this, "noteon");
     router.addListener(this, "noteoff");
 
     // master volume control
-    masterGain.gain.value = startVolume||0.5;
-    let master = h(Slider,{
-      ref: e => (master.api=e),
+    masterGain.gain.value = startVolume || 0.5;
+    let master = h(Slider, {
+      ref: (e) => (master.api = e),
       label: "volume",
       value: masterGain.gain.value,
-      onInput: v => (masterGain.gain.value = v),
-      cc: volumeCode
+      onInput: (v) => (masterGain.gain.value = v),
+      cc: volumeCode,
     });
-    render(master, top);
+    render(master, document.querySelector(`#master`));
 
     // set up an LFO, which we can use either
     // globally, or as LFO modulator for
     // each individual oscillator used.
-    render(h(LFO, {
-      ref: e => {
-        let lfo = e.getOutput();
-        AudioSource.setGlobalLFO(lfo);
-      }
-    }), top);
-
+    render(
+      h(LFO, {
+        ref: (e) => {
+          let lfo = e.getOutput();
+          AudioSource.setGlobalLFO(lfo);
+        },
+      }),
+      document.querySelector(`#lfo`)
+    );
 
     // active audio source tracking
     this.generators = {};
@@ -51,22 +52,25 @@ class Synth {
       out: masterGain,
       attack: 0.020,
       decay: 0.020
-    }), top);
+    }), document.querySelector(`#drawbars`));
 
     // keyboard visualisation
     render(h(Keyboard, {
       ref: e => (this.keyboard = e)
-    }), top);
+    }), document.querySelector(`#keyboard`));
+
   }
 
   onNoteOn(note, velocity) {
     this.playNote(note, velocity);
   }
 
-  playNote(note, velocity, delay=0) {
-    if (velocity === 0) return ()=>{};
+  playNote(note, velocity, delay = 0) {
+    if (velocity === 0) return () => {};
     let active = this.generators[note];
-    if (active) { active.stop(); }
+    if (active) {
+      active.stop();
+    }
     active = this.generators[note] = this.drawbars.getSource(note, velocity);
     active.start();
   }
