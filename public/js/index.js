@@ -50,10 +50,13 @@ function getMIDIMessage(midiMessage) {
 }
 
 // general bootstrapping
-function onMidiSuccess(success) {
+function onMidiSuccess(result) {
   let deviceCount = 0;
-  for (var input of success.inputs.values()) {
-    input.onmidimessage = getMIDIMessage;
+
+  for (let device of result.inputs.values()) {
+    if (device.name === `LKMK3 MIDI`) {
+      device.addEventListener(`midimessage`, getMIDIMessage);
+    }
     deviceCount++;
   }
   if (deviceCount > 0) {
@@ -67,7 +70,8 @@ function onMidiSuccess(success) {
 }
 
 // even if midi device access fails, we still have a synth to play with
-function onMidiFail() {
+function onMidiFail(e) {
+  console.error(e);
   alert(
     "Web MIDI is available, but MIDI device access failed (and the\nspec does not give me more details to help you find out why...)"
   );

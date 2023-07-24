@@ -16,6 +16,6 @@ Either hit up the above URL to just play around, or if you want to play with the
 
 ## How complain??
 
-Opinions to [twitter](https://twitter.com/TheRealPomax) or [mastodon](https://mastodon.cloud/@TheRealPomax), please. Things that require we actually talk to each other should be filed as an [issue](issues) on this very github repo.
+Opinions to [mastodon](https://mastodon.cloud/@TheRealPomax), please. Things that require we actually talk to each other should be filed as an [issue](issues) on this very github repo.
 
 - Pomax
