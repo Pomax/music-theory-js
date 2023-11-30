@@ -54,9 +54,7 @@ function onMidiSuccess(result) {
   let deviceCount = 0;
 
   for (let device of result.inputs.values()) {
-    if (device.name === `LKMK3 MIDI`) {
-      device.addEventListener(`midimessage`, getMIDIMessage);
-    }
+    device.addEventListener(`midimessage`, getMIDIMessage);
     deviceCount++;
   }
   if (deviceCount > 0) {
